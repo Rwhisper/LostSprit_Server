@@ -12,7 +12,7 @@ namespace Server
 	class ClientSession : PacketSession
 	{
 		public int SessionId { get; set; }
-		public string attr { get; set; }
+		public string Attr { get; set; }
 		public GameRoom Room { get; set; }
 		public float PosX { get; set; }
 		public float PosY { get; set; }

@@ -34,17 +34,31 @@ namespace Server
         public void Enter(ClientSession session)
         {
             session.Room = this;
-            session.attr = null;
+            
 
             _sessions.Add(session);
-
+            
 
 
         }
 
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-           
+
+            ClientSession Mysession;
+            Mysession = _sessions.Find(x => x.SessionId == session.SessionId);
+            Mysession.Attr = packet.attr;
+            Mysession.PosX = packet.posX;
+            Mysession.PosY = packet.posY;
+            Mysession.PosZ = packet.posZ;
+
+
+
+            _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
+            _sessions.Add(Mysession);
+
+
+
             // 새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
             foreach (ClientSession s in _sessions)
@@ -54,13 +68,13 @@ namespace Server
                 {
                     isSelf = (s == session),
                     playerId = s.SessionId,
-                    attr = packet.attr,
+                    attr = s.Attr,
                     posX = s.PosX,
                     posY = s.PosY,
                     posZ = s.PosZ,
                 });
+                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
 
-                
             }
 
             session.Send(players.Write());
@@ -102,6 +116,13 @@ namespace Server
             move.posY = session.PosY;
             move.posZ = session.PosZ;
             Broadcast(move.Write());
+        }
+
+        public void DestroyItem(ClientSession session, C_DestroyItem packet)
+        {
+            S_BoradCastDestroyItem destroy = new S_BoradCastDestroyItem();
+            destroy.item = packet.item;
+            Broadcast(destroy.Write());
         }
     }
 }

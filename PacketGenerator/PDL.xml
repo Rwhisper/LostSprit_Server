@@ -20,7 +20,7 @@
 			<int name ="playerId"/>
 			<float name ="posX"/>
 			<float name ="posY"/>
-			<float name ="posZ"/>
+			<float name ="posZ"/>	
 		</list>
 	</packet>
 	<packet name ="C_Move">
@@ -40,4 +40,29 @@
 		<float name ="posY"/>
 		<float name ="posZ"/>
 	</packet>
+	<packet name ="C_DestroyItem">
+		<string name ="item"/>
+	</packet>
+	<packet name ="C_GameOver">
+		
+	</packet>
+	<packet name ="S_BoradCastDestroyItem">
+		<string name ="item"/>
+	</packet>
+	<packet name ="S_BroadCastGameOver">
+		
+	</packet>
+	<packet name ="C_DropItem">
+		<string name ="tag"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	<packet name="S_BroadCastDropItem">
+		<string name ="tag"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	
 </PDL>

@@ -25,6 +25,12 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_Move, PacketHandler.C_MoveHandler);
 		_makeFunc.Add((ushort)PacketID.C_Enter, MakePacket<C_Enter>);
 		_handler.Add((ushort)PacketID.C_Enter, PacketHandler.C_EnterHandler);
+		_makeFunc.Add((ushort)PacketID.C_DestroyItem, MakePacket<C_DestroyItem>);
+		_handler.Add((ushort)PacketID.C_DestroyItem, PacketHandler.C_DestroyItemHandler);
+		_makeFunc.Add((ushort)PacketID.C_GameOver, MakePacket<C_GameOver>);
+		_handler.Add((ushort)PacketID.C_GameOver, PacketHandler.C_GameOverHandler);
+		_makeFunc.Add((ushort)PacketID.C_DropItem, MakePacket<C_DropItem>);
+		_handler.Add((ushort)PacketID.C_DropItem, PacketHandler.C_DropItemHandler);
 
 	}
 
@@ -44,7 +50,7 @@ public class PacketManager
 			if (onRecvCallback != null)
 				onRecvCallback.Invoke(session, packet);
 			else
-				HandlePacket(session, packet);
+			HandlePacket(session, packet);
 		}
 	}
 
