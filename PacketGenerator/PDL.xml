@@ -1,68 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
-	<packet name ="S_BroadcastEnterGame">
-		<int name ="playerId"/>
-		<string name ="attr"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>		
-	</packet>
-	<packet name ="C_LeaveGame">
-		
-	</packet>
-	<packet name ="S_BroadcastLeaveGame">
-		<int name="playerId"/>
-	</packet>
-	<packet name ="S_PlayerList">
-		<list name = "player">
-			<string name ="attr"/>
-			<bool name ="isSelf"/>
-			<int name ="playerId"/>
-			<float name ="posX"/>
-			<float name ="posY"/>
-			<float name ="posZ"/>	
-		</list>
-	</packet>
-	<packet name ="C_Move">
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	<packet name ="S_BroadCastMove">
-		<int name ="playerId"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	<packet name ="C_Enter">
-		<string name ="attr"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	<packet name ="C_DestroyItem">
-		<string name ="item"/>
-	</packet>
-	<packet name ="C_GameOver">
-		
-	</packet>
-	<packet name ="S_BoradCastDestroyItem">
-		<string name ="item"/>
-	</packet>
-	<packet name ="S_BroadCastGameOver">
-		
-	</packet>
-	<packet name ="C_DropItem">
-		<string name ="tag"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	<packet name="S_BroadCastDropItem">
-		<string name ="tag"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	
+  <packet name="C_Chat">
+	<string name="chat"/>
+  </packet>
+  <packet name="S_Chat">
+	<int name="playerId"/>
+	<string name="chat"/>
+  </packet>
 </PDL>

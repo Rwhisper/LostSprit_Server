@@ -135,7 +135,7 @@ namespace PacketGenerator
 						memberCode += t.Item1;
 						readCode += t.Item2;
 						writeCode += t.Item3;
-						break;	
+						break;
 					default:
 						break;
 				}

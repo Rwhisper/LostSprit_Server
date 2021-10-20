@@ -17,10 +17,10 @@ namespace Server
 		static void FlushRoom()
 		{
 			Room.Push(() => Room.Flush());
-			JobTimer.Instance.Push(FlushRoom, 25);
+			JobTimer.Instance.Push(FlushRoom, 250);
 		}
 
-		static void Main(string[] args) 
+		static void Main(string[] args)
 		{
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
