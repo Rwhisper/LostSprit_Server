@@ -1,10 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
-  <packet name="C_Chat">
-	<string name="chat"/>
+	<packet name ="S_BroadcastEnterGame">
+		<int name ="playerId"/>
+		<string name ="attr"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>		
+	</packet>
+	<packet name ="C_LeaveGame">
+		
+	</packet>
+	<packet name ="S_BroadcastLeaveGame">
+		<int name="playerId"/>
+	</packet>
+	<packet name ="S_PlayerList">
+		<list name = "player">
+			<string name ="attr"/>
+			<bool name ="isSelf"/>
+			<int name ="playerId"/>
+			<float name ="posX"/>
+			<float name ="posY"/>
+			<float name ="posZ"/>	
+		</list>
+	</packet>
+	<packet name ="C_Move">
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+  <packet name ="C_Rot">
+    <float name ="rotX"/>
+		<float name ="rotY"/>
+		<float name ="rotZ"/>
+		<float name ="rotW"/>
   </packet>
-  <packet name="S_Chat">
-	<int name="playerId"/>
-	<string name="chat"/>
+  <packet name ="S_BroadCastRot">
+		<int name ="playerId"/>
+    <float name ="rotX"/>
+		<float name ="rotY"/>
+		<float name ="rotZ"/>
+		<float name ="rotW"/>
+  </packet>
+	<packet name ="S_BroadCastMove">
+		<int name ="playerId"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	<packet name ="C_Enter">
+		<string name ="attr"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	<packet name ="C_DestroyItem">
+		<int name ="itemID"/>
+	</packet>
+	<packet name ="C_GameOver">
+		
+	</packet>
+	<packet name ="S_BoradCastDestroyItem">
+		<int name ="itemID"/>
+	</packet>
+	<packet name ="S_BroadCastGameOver">
+		
+	</packet>
+	<packet name ="C_DropItem">
+		<string name ="tag"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	<packet name="S_BroadCastDropItem">
+		<string name ="tag"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+	</packet>
+	<packet name ="C_MoveItem">
+    <int name ="itemID"/>
+		<float name ="posX"/>
+		<float name ="posY"/>
+		<float name ="posZ"/>
+		<float name ="rotX"/>
+		<float name ="rotY"/>
+		<float name ="rotZ"/>
+		<float name ="rotW"/>
   </packet>
 </PDL>

@@ -1,5 +1,6 @@
 ﻿using DummyClient;
 using ServerCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -9,6 +10,10 @@ public class NetworkManager : MonoBehaviour
 {
 	ServerSession _session = new ServerSession();
 
+	public void Send(ArraySegment<byte> senBuff)
+    {
+		_session.Send(senBuff);
+    }
     void Start()
     {
 		// DNS (Domain Name System)
@@ -22,10 +27,19 @@ public class NetworkManager : MonoBehaviour
 		connector.Connect(endPoint,
 			() => { return _session; },
 			1);
+		
+		
 	}
 
     void Update()
     {
-        
+		List<IPacket> list = PacketQueue.Instance.PopAll();
+
+		foreach (IPacket packet in list)
+		{
+			PacketManager.Instance.HandlePacket(_session, packet);
+		}		
     }
+
+	
 }
