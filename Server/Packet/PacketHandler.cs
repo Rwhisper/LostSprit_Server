@@ -6,6 +6,15 @@ using System.Text;
 
 class PacketHandler
 {
+	public static void C_LoginHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	public static void C_LogoutHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+
 	public static void C_LeaveGameHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
@@ -26,7 +35,7 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		Console.WriteLine($"{movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
+		Console.WriteLine($"위치 : {movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
 		GameRoom room = clientSession.Room;
 		room.Push(
 			() => room.Move(clientSession, movePacket)
@@ -34,16 +43,18 @@ class PacketHandler
 	}
 	public static void C_RotHandler(PacketSession session, IPacket packet)
     {
-		C_Move movePacket = packet as C_Move;
+		C_Rot rotPacket = packet as C_Rot;
 		ClientSession clientSession = session as ClientSession;
 
 		if (clientSession.Room == null)
 			return;
-
-        Console.WriteLine($"{movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
-		GameRoom room = clientSession.Room;
+        //float x, y, z;
+        //if (movePacket.posX == null)
+        //	movePacket.posX == 
+        Console.WriteLine($"각도 : {rotPacket.rotX}, {rotPacket.rotY}, {rotPacket.rotZ}, {rotPacket.rotW}");
+        GameRoom room = clientSession.Room;
 		room.Push(
-			() => room.Move(clientSession, movePacket)
+			() => room.Rot(clientSession, rotPacket)
 		);
 	}
 	public static void C_EnterHandler(PacketSession session, IPacket packet)
@@ -87,4 +98,25 @@ class PacketHandler
 
 
 	}
+	public static void C_RoomListHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	public static void C_RoomRefreshHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	public static void C_RoomEnterHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	public static void C_LeaveRoomHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	public static void C_RankListHandler(PacketSession session, IPacket packet)
+	{
+
+	}
+	
 }

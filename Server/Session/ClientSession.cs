@@ -12,11 +12,21 @@ namespace Server
 	class ClientSession : PacketSession
 	{
 		public int SessionId { get; set; }
+		public string PlayerId { get; set; }
+		public string NickName { get; set; }
 		public string Attr { get; set; }
 		public GameRoom Room { get; set; }
+		// 위치
 		public float PosX { get; set; }
 		public float PosY { get; set; }
 		public float PosZ { get; set; }
+		// 각도
+		public float RotX { get; set; }
+		public float RotY { get; set; }
+		public float RotZ { get; set; }
+		public float RotW { get; set; }
+
+		public string RoomHost { get; set; }
 
 		public override void OnConnected(EndPoint endPoint)
 		{

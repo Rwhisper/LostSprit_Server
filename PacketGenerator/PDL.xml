@@ -1,28 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
+  <!--S - 서버에서 보내는 패킷-->
+  <packet name ="S_LoginResult">
+    <int name ="result"/>
+  </packet>
 	<packet name ="S_BroadcastEnterGame">
-		<int name ="playerId"/>
+		<string name ="playerId"/>
 		<string name ="attr"/>
 		<float name ="posX"/>
 		<float name ="posY"/>
 		<float name ="posZ"/>		
 	</packet>
+  <packet name ="S_BroadcastLeaveGame">
+    <string name="playerId"/>
+  </packet>
+  <packet name ="S_PlayerList">
+    <list name = "player">
+      <string name ="attr"/>
+      <bool name ="isSelf"/>
+      <string name ="playerId"/>
+      <float name ="posX"/>
+      <float name ="posY"/>
+      <float name ="posZ"/>
+    </list>
+  </packet>
+  <packet name ="S_BroadCastRot">
+    <string name ="playerId"/>
+    <float name ="rotX"/>
+    <float name ="rotY"/>
+    <float name ="rotZ"/>
+    <float name ="rotW"/>
+  </packet>
+  <packet name ="S_BroadCastMove">
+    <string name ="playerId"/>
+    <float name ="posX"/>
+    <float name ="posY"/>
+    <float name ="posZ"/>
+  </packet>
+  <packet name ="S_BroadCastDestroyItem">
+    <int name ="itemId"/>
+  </packet>
+  <packet name ="S_BroadCastGameOver">
+
+  </packet>
+  <packet name="S_BroadCastDropItem">
+    <int name ="itemId"/>
+    <float name ="posX"/>
+    <float name ="posY"/>
+    <float name ="posZ"/>
+  </packet>
+  <packet name ="S_BroadCastItemEvent">
+    <int name ="itemId"/>
+    <int name ="itemEvent"/>
+  </packet>
+  <packet name ="S_RoomList">
+    <list name="Room">
+      <string name="host"/>
+      <bool name ="state"/>
+      <int name="maxPlayer"/>
+      <int name ="nowPlayer"/>
+      <string name ="title"/>
+      <string name ="stage"/>
+    </list>
+  </packet>
+  <packet name ="S_RankList">
+    <list name ="Rank">
+      <string name ="stage"/>
+      <string name ="id"/>
+      <string name ="ClearTime"/>
+      <string name ="attr"/>
+    </list>
+  </packet>
+  <packet name ="S_RoomConnFaild">
+    <int name ="result"/>
+  </packet>
+  <!--C - 클라이언트에서 보내는 패킷-->
+  <packet name ="C_Login">
+    <string name ="id"/>
+    <string name ="pwd"/>
+  </packet>
+  <packet name ="C_Logout">
+  </packet>
 	<packet name ="C_LeaveGame">
-		
-	</packet>
-	<packet name ="S_BroadcastLeaveGame">
-		<int name="playerId"/>
-	</packet>
-	<packet name ="S_PlayerList">
-		<list name = "player">
-			<string name ="attr"/>
-			<bool name ="isSelf"/>
-			<int name ="playerId"/>
-			<float name ="posX"/>
-			<float name ="posY"/>
-			<float name ="posZ"/>	
-		</list>
-	</packet>
+	</packet>  
 	<packet name ="C_Move">
 		<float name ="posX"/>
 		<float name ="posY"/>
@@ -33,20 +93,7 @@
 		<float name ="rotY"/>
 		<float name ="rotZ"/>
 		<float name ="rotW"/>
-  </packet>
-  <packet name ="S_BroadCastRot">
-		<int name ="playerId"/>
-    <float name ="rotX"/>
-		<float name ="rotY"/>
-		<float name ="rotZ"/>
-		<float name ="rotW"/>
-  </packet>
-	<packet name ="S_BroadCastMove">
-		<int name ="playerId"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
+  </packet>  
 	<packet name ="C_Enter">
 		<string name ="attr"/>
 		<float name ="posX"/>
@@ -54,37 +101,26 @@
 		<float name ="posZ"/>
 	</packet>
 	<packet name ="C_DestroyItem">
-		<int name ="itemID"/>
+		<int name ="itemId"/>
 	</packet>
 	<packet name ="C_GameOver">
-		
-	</packet>
-	<packet name ="S_BoradCastDestroyItem">
-		<int name ="itemID"/>
-	</packet>
-	<packet name ="S_BroadCastGameOver">
-		
-	</packet>
+	</packet>	
 	<packet name ="C_DropItem">
-		<string name ="tag"/>
+		<int name ="itemId"/>
 		<float name ="posX"/>
 		<float name ="posY"/>
 		<float name ="posZ"/>
 	</packet>
-	<packet name="S_BroadCastDropItem">
-		<string name ="tag"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-	</packet>
-	<packet name ="C_MoveItem">
-    <int name ="itemID"/>
-		<float name ="posX"/>
-		<float name ="posY"/>
-		<float name ="posZ"/>
-		<float name ="rotX"/>
-		<float name ="rotY"/>
-		<float name ="rotZ"/>
-		<float name ="rotW"/>
+  <packet name ="C_RoomList">
   </packet>
+  <packet name ="C_RoomRefresh">
+  </packet>
+  <packet name ="C_RoomEnter">
+    <string name ="host"/>
+  </packet>
+  <packet name ="C_RankList">
+  </packet>
+  <packet name ="C_LeaveRoom">
+  </packet>
+  
 </PDL>

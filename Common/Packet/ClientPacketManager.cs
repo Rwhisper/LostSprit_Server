@@ -19,6 +19,8 @@ public class PacketManager
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.S_LoginResult, MakePacket<S_LoginResult>);
+		_handler.Add((ushort)PacketID.S_LoginResult, PacketHandler.S_LoginResultHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastEnterGame, MakePacket<S_BroadcastEnterGame>);
 		_handler.Add((ushort)PacketID.S_BroadcastEnterGame, PacketHandler.S_BroadcastEnterGameHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastLeaveGame, MakePacket<S_BroadcastLeaveGame>);
@@ -29,12 +31,20 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_BroadCastRot, PacketHandler.S_BroadCastRotHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastMove, MakePacket<S_BroadCastMove>);
 		_handler.Add((ushort)PacketID.S_BroadCastMove, PacketHandler.S_BroadCastMoveHandler);
-		_makeFunc.Add((ushort)PacketID.S_BoradCastDestroyItem, MakePacket<S_BoradCastDestroyItem>);
-		_handler.Add((ushort)PacketID.S_BoradCastDestroyItem, PacketHandler.S_BoradCastDestroyItemHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadCastDestroyItem, MakePacket<S_BroadCastDestroyItem>);
+		_handler.Add((ushort)PacketID.S_BroadCastDestroyItem, PacketHandler.S_BroadCastDestroyItemHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastGameOver, MakePacket<S_BroadCastGameOver>);
 		_handler.Add((ushort)PacketID.S_BroadCastGameOver, PacketHandler.S_BroadCastGameOverHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastDropItem, MakePacket<S_BroadCastDropItem>);
 		_handler.Add((ushort)PacketID.S_BroadCastDropItem, PacketHandler.S_BroadCastDropItemHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadCastItemEvent, MakePacket<S_BroadCastItemEvent>);
+		_handler.Add((ushort)PacketID.S_BroadCastItemEvent, PacketHandler.S_BroadCastItemEventHandler);
+		_makeFunc.Add((ushort)PacketID.S_RoomList, MakePacket<S_RoomList>);
+		_handler.Add((ushort)PacketID.S_RoomList, PacketHandler.S_RoomListHandler);
+		_makeFunc.Add((ushort)PacketID.S_RankList, MakePacket<S_RankList>);
+		_handler.Add((ushort)PacketID.S_RankList, PacketHandler.S_RankListHandler);
+		_makeFunc.Add((ushort)PacketID.S_RoomConnFaild, MakePacket<S_RoomConnFaild>);
+		_handler.Add((ushort)PacketID.S_RoomConnFaild, PacketHandler.S_RoomConnFaildHandler);
 
 	}
 

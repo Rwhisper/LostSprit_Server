@@ -19,6 +19,10 @@ public class PacketManager
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.C_Login, MakePacket<C_Login>);
+		_handler.Add((ushort)PacketID.C_Login, PacketHandler.C_LoginHandler);
+		_makeFunc.Add((ushort)PacketID.C_Logout, MakePacket<C_Logout>);
+		_handler.Add((ushort)PacketID.C_Logout, PacketHandler.C_LogoutHandler);
 		_makeFunc.Add((ushort)PacketID.C_LeaveGame, MakePacket<C_LeaveGame>);
 		_handler.Add((ushort)PacketID.C_LeaveGame, PacketHandler.C_LeaveGameHandler);
 		_makeFunc.Add((ushort)PacketID.C_Move, MakePacket<C_Move>);
@@ -33,6 +37,16 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_GameOver, PacketHandler.C_GameOverHandler);
 		_makeFunc.Add((ushort)PacketID.C_DropItem, MakePacket<C_DropItem>);
 		_handler.Add((ushort)PacketID.C_DropItem, PacketHandler.C_DropItemHandler);
+		_makeFunc.Add((ushort)PacketID.C_RoomList, MakePacket<C_RoomList>);
+		_handler.Add((ushort)PacketID.C_RoomList, PacketHandler.C_RoomListHandler);
+		_makeFunc.Add((ushort)PacketID.C_RoomRefresh, MakePacket<C_RoomRefresh>);
+		_handler.Add((ushort)PacketID.C_RoomRefresh, PacketHandler.C_RoomRefreshHandler);
+		_makeFunc.Add((ushort)PacketID.C_RoomEnter, MakePacket<C_RoomEnter>);
+		_handler.Add((ushort)PacketID.C_RoomEnter, PacketHandler.C_RoomEnterHandler);
+		_makeFunc.Add((ushort)PacketID.C_RankList, MakePacket<C_RankList>);
+		_handler.Add((ushort)PacketID.C_RankList, PacketHandler.C_RankListHandler);
+		_makeFunc.Add((ushort)PacketID.C_LeaveRoom, MakePacket<C_LeaveRoom>);
+		_handler.Add((ushort)PacketID.C_LeaveRoom, PacketHandler.C_LeaveRoomHandler);
 
 	}
 
