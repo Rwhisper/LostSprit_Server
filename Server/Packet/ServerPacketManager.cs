@@ -39,6 +39,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_DropItem, PacketHandler.C_DropItemHandler);
 		_makeFunc.Add((ushort)PacketID.C_RoomList, MakePacket<C_RoomList>);
 		_handler.Add((ushort)PacketID.C_RoomList, PacketHandler.C_RoomListHandler);
+		_makeFunc.Add((ushort)PacketID.C_CreateRoom, MakePacket<C_CreateRoom>);
+		_handler.Add((ushort)PacketID.C_CreateRoom, PacketHandler.C_CreateRoomHandler);
 		_makeFunc.Add((ushort)PacketID.C_RoomRefresh, MakePacket<C_RoomRefresh>);
 		_handler.Add((ushort)PacketID.C_RoomRefresh, PacketHandler.C_RoomRefreshHandler);
 		_makeFunc.Add((ushort)PacketID.C_RoomEnter, MakePacket<C_RoomEnter>);

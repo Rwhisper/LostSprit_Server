@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ServerCore;
 
 namespace Server
 {
 /// <summary>
 /// 전체 접속한 유저들 관리하는 클래스
 /// </summary>
-	class SessionManager
+	class SessionManager : IJobQueue
 	{
 		static SessionManager _session = new SessionManager();
 		public static SessionManager Instance { get { return _session; } }
 
+
+		JobQueue _jobQueue = new JobQueue();
+
 		int _sessionId = 0;
+		int _roomId = 1;
 		/// <summary>
 		/// 서버에 접속한 유저 정보
 		/// </summary>
@@ -21,12 +26,26 @@ namespace Server
 		/// 로그인한 유저들의 정보
 		/// </summary>
 		Dictionary<string, ClientSession> _loginSession = new Dictionary<string, ClientSession>();
-		Dictionary<string, GameRoom> _gameRoom = new Dictionary<string, GameRoom>();
+		Dictionary<int, GameRoom> _gameRoom = new Dictionary<int, GameRoom>();
 
 
 		object _lock = new object();
 
+		public void Push(Action job)
+		{
+			_jobQueue.Push(job);
+		}
 
+		public void Flush()
+		{
+			
+			//// N ^ 2
+			//foreach (ClientSession s in _sessions)
+			//	s.Send(_pendingList);
+
+			////Console.WriteLine($"Flushed {_pendingList.Count} items");
+			//_pendingList.Clear();
+		}
 
 		public ClientSession Generate()
 		{
@@ -108,9 +127,25 @@ namespace Server
             
         }
 
+		public void CreateRoom(ClientSession session, C_CreateRoom packet)
+        {
+			lock (_lock)
+			{
+				int roomId = ++_roomId;
+
+				session.Room.Roomid = roomId;
+				GameRoom createRoom = new GameRoom();
+				createRoom.maxPlayer = packet.maxUser;
+				_gameRoom.Add(roomId, createRoom);
+
+				Console.WriteLine($"Connected : {roomId}");
+
+			}
+		}
+
 		public void RoomEnter(ClientSession session, C_RoomEnter packet)
         {
-			if (_gameRoom.TryGetValue(packet.host, out GameRoom room))
+			if (_gameRoom.TryGetValue(packet.roomNumber, out GameRoom room))
             {
 				if(room.maxPlayer < room.nowPlayer)
                 {
@@ -128,18 +163,21 @@ namespace Server
             {
 				S_RoomConnFaild pkt = new S_RoomConnFaild();
 				pkt.result = 0;
+				session.Room.Roomid = packet.roomNumber;
 				session.Send(pkt.Write());			
             }
 		}
 
 		public void LeaveRoomSession(ClientSession session)
 		{
-			if (_gameRoom.TryGetValue(session.RoomHost, out GameRoom room))
+			
+			if (_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
 			{
-				room.LeaveRoom();
+				room.LeaveRoom(session);
+				session.Room.Roomid = 0;
 				if(room.nowPlayer <= 0)
                 {
-					_gameRoom.Remove(session.RoomHost);
+					_gameRoom.Remove(session.Room.Roomid);
                 }
 			}
 		}

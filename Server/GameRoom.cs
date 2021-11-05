@@ -11,13 +11,20 @@ namespace Server
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
-        Queue<string> roomQueue = null;
+        public int Roomid { get; set; }
         public string Host { get; set; }
         public int maxPlayer { get; set; }
         public int nowPlayer { get; set; }
         public void Push(Action job)
         {
             _jobQueue.Push(job);
+        }
+        public GameRoom()     
+        {
+            Roomid = 0;
+            Host = null;
+            maxPlayer = 0;
+            nowPlayer = 0;
         }
 
         public void Flush()
@@ -29,6 +36,13 @@ namespace Server
             //Console.WriteLine($"Flushed {_pendingList.Count} items");
             _pendingList.Clear();
         }
+        public void CreateRoom(ClientSession session, int max)
+        {
+            _sessions.Add(session);
+            Host = session.PlayerId;
+            maxPlayer = max;
+            nowPlayer++;
+        }
 
         public void Login(ClientSession session, C_Login packet)
         {
@@ -39,9 +53,10 @@ namespace Server
                 _sessions.Add(session);
             }
         }
-        public void LeaveRoom()
-        {
 
+        public void LeaveRoom(ClientSession session)
+        {
+            _sessions.Remove(session);
         }
 
         public void EnterLobby()

@@ -113,10 +113,14 @@
 	</packet>
   <packet name ="C_RoomList">
   </packet>
+  <packet name ="C_CreateRoom">
+    <string name ="RoomName"/>
+    <int name ="maxUser"/>
+  </packet>
   <packet name ="C_RoomRefresh">
   </packet>
   <packet name ="C_RoomEnter">
-    <string name ="host"/>
+    <int name ="roomNumber"/>
   </packet>
   <packet name ="C_RankList">
   </packet>
