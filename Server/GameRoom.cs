@@ -12,6 +12,7 @@ namespace Server
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
         public int Roomid { get; set; }
+        public string RoomName { get; set; }
         public string Host { get; set; }
         public int maxPlayer { get; set; }
         public int nowPlayer { get; set; }
@@ -57,6 +58,7 @@ namespace Server
         public void LeaveRoom(ClientSession session)
         {
             _sessions.Remove(session);
+            --nowPlayer;
         }
 
         public void EnterLobby()
@@ -82,7 +84,7 @@ namespace Server
         {
 
             ClientSession Mysession;
-            Mysession = _sessions.Find(x => x.PlayerId == session.PlayerId);
+            Mysession = _sessions.Find(x => x.SessionId == session.SessionId);
             Mysession.Attr = packet.attr;
             Mysession.PosX = packet.posX;
             Mysession.PosY = packet.posY;
@@ -90,7 +92,7 @@ namespace Server
 
 
 
-            _sessions.Remove(_sessions.Find(x => x.PlayerId == session.PlayerId));
+            _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
             _sessions.Add(Mysession);
 
 

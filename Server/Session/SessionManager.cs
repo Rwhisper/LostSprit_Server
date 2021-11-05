@@ -62,7 +62,7 @@ namespace Server
 				return session;
 			}
 		}
-
+		// 유저 찾기
 		public ClientSession Find(int id)
 		{
 			lock (_lock)
@@ -83,7 +83,11 @@ namespace Server
 			}
 		}
 
-
+		/// <summary>
+		/// 로그인 확인 함수
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="packet"></param>
 		public void Login(ClientSession session, C_Login packet)
         {
             lock (_lock)
@@ -127,22 +131,64 @@ namespace Server
             
         }
 
+		public void Logout(ClientSession session)
+        {
+
+			_loginSession.Remove(session.PlayerId);
+			if(session.Room.Roomid > 0)
+            {
+				_gameRoom[session.Room.Roomid].LeaveRoom(session);
+			}
+			
+        }
+		/// <summary>
+		/// 룸 리스트 요청 패킷이 넘어 올때 실행
+		/// </summary>
+		public void ListRoom()
+        {
+			List<Room> _roomList = new List<Room>();
+			Room gm = new Room();
+			foreach (GameRoom room in _gameRoom.Values)
+            {
+				gm.Roomid = room.Roomid;
+				gm.Host = room.Host;
+				gm.nowPlayer = room.nowPlayer;
+				gm.maxPlayer = room.maxPlayer;
+				gm.Roomid = room.Roomid;
+				gm.RoomName = room.RoomName;
+				_roomList.Add(gm);
+            }
+			// 룸 리스트 반환 패킷
+        }
+
+		/// <summary>
+		/// 룸생성 요청을 처리
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="packet"></param>
 		public void CreateRoom(ClientSession session, C_CreateRoom packet)
         {
 			lock (_lock)
 			{
 				int roomId = ++_roomId;
-
+				// 룸 아이디 저장
 				session.Room.Roomid = roomId;
 				GameRoom createRoom = new GameRoom();
+				// 설정한 최대 유저수
 				createRoom.maxPlayer = packet.maxUser;
+				// 만든 룸에 호스트 집어넣기
+				createRoom.Push(() => createRoom.Enter(session));
+				// 룸 리스트에 룸 추가
 				_gameRoom.Add(roomId, createRoom);
 
-				Console.WriteLine($"Connected : {roomId}");
-
+				Console.WriteLine($"CreateRoom : {roomId}, Host : {session.PlayerId}");
 			}
 		}
-
+		/// <summary>
+		/// 새로이 룸에 들어가기
+		/// </summary>
+		/// <param name="session"></param>
+		/// <param name="packet"></param>
 		public void RoomEnter(ClientSession session, C_RoomEnter packet)
         {
 			if (_gameRoom.TryGetValue(packet.roomNumber, out GameRoom room))
@@ -168,6 +214,10 @@ namespace Server
             }
 		}
 
+		/// <summary>
+		/// 방에서 나가기
+		/// </summary>
+		/// <param name="session"></param>
 		public void LeaveRoomSession(ClientSession session)
 		{
 			
