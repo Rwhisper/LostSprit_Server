@@ -11,23 +11,43 @@ namespace Server
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
+        
         public int Roomid { get; set; }
         public string RoomName { get; set; }
         public string Host { get; set; }
         public int maxPlayer { get; set; }
         public int nowPlayer { get; set; }
-        public void Push(Action job)
-        {
-            _jobQueue.Push(job);
-        }
-        public GameRoom()     
+        public DateTime startTime;
+        public int status { get; set; }
+        public GameRoom()
         {
             Roomid = 0;
             Host = null;
             maxPlayer = 0;
             nowPlayer = 0;
+            status = 0;
         }
 
+        public void StartTimer()
+        {
+            startTime = DateTime.Now;
+        }
+        public string EndTimer()
+        {
+            DateTime endTime = DateTime.Now;
+            string time = null;
+            TimeSpan spanStart = new TimeSpan(startTime.Hour, startTime.Minute, startTime.Second, startTime.Millisecond);
+            TimeSpan spanEnd = new TimeSpan(endTime.Hour, endTime.Minute, endTime.Second, endTime.Millisecond);
+            time = spanEnd.Subtract(spanStart).ToString();
+
+            return time;
+        }
+
+        public void Push(Action job)
+        {
+            _jobQueue.Push(job);
+        }
+       
         public void Flush()
         {
             // N ^ 2
@@ -37,12 +57,19 @@ namespace Server
             //Console.WriteLine($"Flushed {_pendingList.Count} items");
             _pendingList.Clear();
         }
+
+        public void PlayStartGame()
+        {
+            status = 2;
+        }
+
         public void CreateRoom(ClientSession session, int max)
         {
             _sessions.Add(session);
             Host = session.PlayerId;
             maxPlayer = max;
             nowPlayer++;
+            status = 1;
         }
 
         public void Login(ClientSession session, C_Login packet)
@@ -59,12 +86,8 @@ namespace Server
         {
             _sessions.Remove(session);
             --nowPlayer;
-        }
+        }        
 
-        public void EnterLobby()
-        {
-
-        }
         public void Broadcast(ArraySegment<byte> segment)
         {
             _pendingList.Add(segment);
@@ -73,9 +96,7 @@ namespace Server
         public void Enter(ClientSession session)
         {
             session.Room = this; 
-
-            _sessions.Add(session);
-            
+            _sessions.Add(session);           
 
 
         }
@@ -91,10 +112,8 @@ namespace Server
             Mysession.PosZ = packet.posZ;
 
 
-
             _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
             _sessions.Add(Mysession);
-
 
 
             // 새로 들어온 플레이어에게 플레이어 목록 전송

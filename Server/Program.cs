@@ -13,6 +13,7 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
 		public static GameRoom Room = new GameRoom();
+		public static SessionManager SMnager = new SessionManager();
 
 		static void FlushRoom()
 		{
