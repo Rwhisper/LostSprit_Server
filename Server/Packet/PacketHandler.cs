@@ -22,10 +22,10 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.Leave(clientSession)
-		); 
+		//GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.Leave(clientSession)
+		//); 
 	}
 	public static void C_MoveHandler(PacketSession session, IPacket packet)
 	{
@@ -118,5 +118,9 @@ class PacketHandler
 	{
 
 	}
-	
+
+	public static void C_CreateRoomHandler(PacketSession session, IPacket packet)
+	{
+
+	}
 }

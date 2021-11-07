@@ -1151,7 +1151,7 @@ public class C_RoomRefresh : IPacket
 
 public class C_RoomEnter : IPacket
 {
-	public string host;
+	public int roomNumber;
 
 	public ushort Protocol { get { return (ushort)PacketID.C_RoomEnter; } }
 
@@ -1160,10 +1160,8 @@ public class C_RoomEnter : IPacket
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
-		ushort hostLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-		count += sizeof(ushort);
-		this.host = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, hostLen);
-		count += hostLen;
+		this.roomNumber = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
 	}
 
 	public ArraySegment<byte> Write()
@@ -1174,10 +1172,8 @@ public class C_RoomEnter : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_RoomEnter), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		ushort hostLen = (ushort)Encoding.Unicode.GetBytes(this.host, 0, this.host.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(hostLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		count += hostLen;
+		Array.Copy(BitConverter.GetBytes(this.roomNumber), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 

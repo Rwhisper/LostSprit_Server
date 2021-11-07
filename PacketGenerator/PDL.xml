@@ -74,6 +74,17 @@
   <packet name ="S_RoomConnFaild">
     <int name ="result"/>
   </packet>
+	<packet name ="S_GameStart">
+		<int name ="result"/>
+	</packet>
+	<packet name ="S_GameClear">
+		<list name ="rank">
+			<int name ="rank"/>
+			<string name ="StageCode"/>
+			<string name ="id"/>
+			<string name="ClearTime"/>			
+		</list>
+	</packet>
   <!--C - 클라이언트에서 보내는 패킷-->
   <packet name ="C_Login">
     <string name ="id"/>
@@ -113,10 +124,14 @@
 	</packet>
   <packet name ="C_RoomList">
   </packet>
+  <packet name ="C_CreateRoom">
+    <string name ="RoomName"/>
+    <int name ="maxUser"/>
+  </packet>
   <packet name ="C_RoomRefresh">
   </packet>
   <packet name ="C_RoomEnter">
-    <string name ="host"/>
+    <int name ="roomNumber"/>
   </packet>
   <packet name ="C_RankList">
   </packet>
