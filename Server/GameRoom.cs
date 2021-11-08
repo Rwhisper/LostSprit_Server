@@ -111,7 +111,6 @@ namespace Server
 
             _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
             _sessions.Add(Mysession);
-
             // 새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
             foreach (ClientSession s in _sessions)
@@ -140,6 +139,7 @@ namespace Server
             enter.posZ = packet.posZ;
             
             Broadcast(enter.Write());
+            Console.WriteLine($"{enter.playerId}의 입장");
         }
 
         public void Leave(ClientSession session)
@@ -167,7 +167,7 @@ namespace Server
             move.posX = session.PosX;
             move.posY = session.PosY;
             move.posZ = session.PosZ;
-            Console.WriteLine("움직임");
+            Console.WriteLine($"{move.playerId} : 움직임");
             Broadcast(move.Write());
         }
         public void Rot(ClientSession session, C_Rot packet)

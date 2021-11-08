@@ -76,7 +76,8 @@ namespace Server
 		{
 			lock (_lock)
 			{
-				_loginSession.Remove(session.PlayerId);
+				if(_loginSession.TryGetValue(session.PlayerId, out ClientSession s))
+					_loginSession.Remove(session.PlayerId);
 				_sessions.Remove(session.SessionId);
 				
 			}
@@ -92,7 +93,7 @@ namespace Server
             lock (_lock)
             {
 				// 이부분은 db연동해서 수정 할 것
-				if (packet.id == "test1" || packet.pwd == "1234")
+				if (packet.id == "waterPlayer" && packet.pwd == "1234")
 				{
 					Console.WriteLine($"{packet.id} 로그인");
 					session.PlayerId = packet.id;
@@ -101,7 +102,7 @@ namespace Server
 					pkt.result = 1;
 					session.Send(pkt.Write());
 				}
-				else if(packet.id == "test2" || packet.pwd == "1234")
+				else if(packet.id == "firePlayer" && packet.pwd == "1234")
                 {
 					Console.WriteLine($"{packet.id} 로그인");
 					session.PlayerId = packet.id;
