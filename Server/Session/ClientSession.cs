@@ -13,7 +13,6 @@ namespace Server
 	{
 		public int SessionId { get; set; }
 		public string PlayerId { get; set; }
-		public string NickName { get; set; }
 		public string Attr { get; set; }
 		public GameRoom Room { get; set; }
 		// 위치
@@ -27,7 +26,7 @@ namespace Server
 		public float RotW { get; set; }
 
 		public string RoomHost { get; set; }
-
+        
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");

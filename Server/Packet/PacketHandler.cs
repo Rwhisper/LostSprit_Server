@@ -8,7 +8,11 @@ class PacketHandler
 {
 	public static void C_LoginHandler(PacketSession session, IPacket packet)
 	{
+		C_Login cloginPacket = packet as C_Login;
+		ClientSession clientsession = session as ClientSession;
+		SessionManager sm = Program.SManager;
 
+		sm.Login(clientsession, cloginPacket);
 	}
 	public static void C_LogoutHandler(PacketSession session, IPacket packet)
 	{
@@ -22,12 +26,12 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		//GameRoom room = clientSession.Room;
-		//room.Push(
-		//	() => room.Leave(clientSession)
-		//); 
-	}
-	public static void C_MoveHandler(PacketSession session, IPacket packet)
+        GameRoom room = clientSession.Room;
+        room.Push(
+            () => room.Leave(clientSession)
+        );
+    }
+    public static void C_MoveHandler(PacketSession session, IPacket packet)
 	{
 		C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
@@ -95,7 +99,10 @@ class PacketHandler
 		C_DropItem enterPacket = packet as C_DropItem;
 		ClientSession clientSession = session as ClientSession;
 
-
+		GameRoom room = clientSession.Room;
+		room.Push(
+			() => room.DropItem(clientSession, enterPacket)
+		);
 
 	}
 	public static void C_RoomListHandler(PacketSession session, IPacket packet)

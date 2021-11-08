@@ -45,6 +45,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_RankList, PacketHandler.S_RankListHandler);
 		_makeFunc.Add((ushort)PacketID.S_RoomConnFaild, MakePacket<S_RoomConnFaild>);
 		_handler.Add((ushort)PacketID.S_RoomConnFaild, PacketHandler.S_RoomConnFaildHandler);
+		_makeFunc.Add((ushort)PacketID.S_GameStart, MakePacket<S_GameStart>);
+		_handler.Add((ushort)PacketID.S_GameStart, PacketHandler.S_GameStartHandler);
+		_makeFunc.Add((ushort)PacketID.S_GameClear, MakePacket<S_GameClear>);
+		_handler.Add((ushort)PacketID.S_GameClear, PacketHandler.S_GameClearHandler);
 
 	}
 

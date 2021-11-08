@@ -11,7 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "ServerCore\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DummyClient", "DummyClient\DummyClient.csproj", "{5DD61612-86DF-4284-887A-FB0BC158E9E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketGenerator", "PacketGenerator\PacketGenerator.csproj", "{1F142840-782A-4EC1-B41B-F78ECD84B42A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PacketGenerator", "PacketGenerator\PacketGenerator.csproj", "{1F142840-782A-4EC1-B41B-F78ECD84B42A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{FEB11883-6A5C-41B5-9551-55D033E9BBB0}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\DataBase.cs = C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\DataBase.cs
+		C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\information.cs = C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\information.cs
+		C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\Program.cs = C:\Users\jeong\OneDrive\문서\카카오톡 받은 파일\Database\Database\Program.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

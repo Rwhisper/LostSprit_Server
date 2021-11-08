@@ -10,7 +10,6 @@ namespace Server
         List<ClientSession> _sessions = new List<ClientSession>();
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
-        Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
         
         public int Roomid { get; set; }
         public string RoomName { get; set; }
@@ -72,15 +71,15 @@ namespace Server
             status = 1;
         }
 
-        public void Login(ClientSession session, C_Login packet)
-        {
-            if(packet.id == "test1" || packet.pwd == "1234")
-            {
-                Console.WriteLine("test1 접속 성공");
-                session.PlayerId = packet.id;
-                _sessions.Add(session);
-            }
-        }
+        //public void Login(ClientSession session, C_Login packet)
+        //{
+        //    if(packet.id == "test1" || packet.pwd == "1234")
+        //    {
+        //        Console.WriteLine("test1 접속 성공");
+        //        session.PlayerId = packet.id;
+        //        _sessions.Add(session);
+        //    }
+        //}
 
         public void LeaveRoom(ClientSession session)
         {
@@ -96,8 +95,7 @@ namespace Server
         public void Enter(ClientSession session)
         {
             session.Room = this; 
-            _sessions.Add(session);           
-
+            _sessions.Add(session);
 
         }
 
@@ -111,16 +109,13 @@ namespace Server
             Mysession.PosY = packet.posY;
             Mysession.PosZ = packet.posZ;
 
-
             _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
             _sessions.Add(Mysession);
-
 
             // 새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
             foreach (ClientSession s in _sessions)
             {
-                
                 players.players.Add(new S_PlayerList.Player()
                 {
                     isSelf = (s == session),
@@ -130,7 +125,7 @@ namespace Server
                     posY = s.PosY,
                     posZ = s.PosZ,
                 });
-                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
+                Console.WriteLine($"{s.PlayerId}의 rotaition : {s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
 
             }
 
@@ -172,6 +167,7 @@ namespace Server
             move.posX = session.PosX;
             move.posY = session.PosY;
             move.posZ = session.PosZ;
+            Console.WriteLine("움직임");
             Broadcast(move.Write());
         }
         public void Rot(ClientSession session, C_Rot packet)
@@ -195,6 +191,16 @@ namespace Server
             //S_BoradCastDestroyItem destroy = new S_BoradCastDestroyItem();
             //destroy.item = packet.item;
             //Broadcast(destroy.Write());
+        }
+
+        public void DropItem(ClientSession session, C_DropItem packet)
+        {
+            S_BroadCastDropItem pkt = new S_BroadCastDropItem();
+            pkt.itemId = packet.itemId;
+            pkt.posX = packet.posX;
+            pkt.posY = packet.posY;
+            pkt.posZ = packet.posZ;
+            Broadcast(pkt.Write());
         }
     }
 }

@@ -8,13 +8,12 @@ namespace Server
 /// <summary>
 /// 전체 접속한 유저들 관리하는 클래스
 /// </summary>
-	class SessionManager : IJobQueue
+	class SessionManager  
 	{
 		static SessionManager _session = new SessionManager();
 		public static SessionManager Instance { get { return _session; } }
 
 
-		JobQueue _jobQueue = new JobQueue();
 
 		int _sessionId = 0;
 		int _roomId = 1;
@@ -31,10 +30,7 @@ namespace Server
 
 		object _lock = new object();
 
-		public void Push(Action job)
-		{
-			_jobQueue.Push(job);
-		}
+		
 
 		public void Flush()
 		{
@@ -62,6 +58,7 @@ namespace Server
 				return session;
 			}
 		}
+
 		// 유저 찾기
 		public ClientSession Find(int id)
 		{
@@ -79,7 +76,9 @@ namespace Server
 		{
 			lock (_lock)
 			{
+				_loginSession.Remove(session.PlayerId);
 				_sessions.Remove(session.SessionId);
+				
 			}
 		}
 
