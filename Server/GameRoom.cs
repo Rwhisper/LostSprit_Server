@@ -14,18 +14,33 @@ namespace Server
         public int Roomid { get; set; }
         public string RoomName { get; set; }
         public string Host { get; set; }
-        public int maxPlayer { get; set; }
-        public int nowPlayer { get; set; }
+        public int MaxPlayer { get; set; }
+        public int NowPlayer { get; set; }
+        public bool State { get; set; }
+        public string Stage { get; set; }
         public void Push(Action job)
         {
             _jobQueue.Push(job);
         }
+
         public GameRoom()     
         {
             Roomid = 0;
             Host = null;
-            maxPlayer = 0;
-            nowPlayer = 0;
+            MaxPlayer = 0;
+            NowPlayer = 0;
+            State = false;
+            Stage = "1";
+        }
+
+        public void LeaveHost(ClientSession session)
+        {
+            foreach(ClientSession s in _sessions)
+            {
+                S_RoomConnFaild pkt = new S_RoomConnFaild();
+                pkt.result = 0;
+                Broadcast(pkt.Write());
+            }
         }
 
         public void Flush()
@@ -39,10 +54,11 @@ namespace Server
         }
         public void CreateRoom(ClientSession session, int max)
         {
-            _sessions.Add(session);
+            session.Room = this;
             Host = session.PlayerId;
-            maxPlayer = max;
-            nowPlayer++;
+            MaxPlayer = max;
+            NowPlayer++;
+            _sessions.Add(session);
         }
 
         public void Login(ClientSession session, C_Login packet)
@@ -53,12 +69,6 @@ namespace Server
                 session.PlayerId = packet.id;
                 _sessions.Add(session);
             }
-        }
-
-        public void LeaveRoom(ClientSession session)
-        {
-            _sessions.Remove(session);
-            --nowPlayer;
         }
 
         public void EnterLobby()
@@ -72,10 +82,9 @@ namespace Server
 
         public void Enter(ClientSession session)
         {
-            session.Room = this; 
-
-            _sessions.Add(session);
-            
+            session.Room = this;
+            ++NowPlayer;
+            _sessions.Add(session);            
 
 
         }
@@ -132,7 +141,7 @@ namespace Server
         {
             // 플레이어를 제거하고
             _sessions.Remove(session);
-
+            --NowPlayer;
             // 모두에게 알린다
             S_BroadcastLeaveGame leave = new S_BroadcastLeaveGame();
             leave.playerId = session.PlayerId;

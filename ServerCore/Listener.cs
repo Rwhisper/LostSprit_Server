@@ -16,10 +16,10 @@ namespace ServerCore
 			_listenSocket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			_sessionFactory += sessionFactory;
 
-			// 문지기 교육
+			// 이 아이피로 받겟다
 			_listenSocket.Bind(endPoint);
 
-			// 영업 시작
+			// 수신 시작
 			// backlog : 최대 대기수
 			_listenSocket.Listen(backlog);
 

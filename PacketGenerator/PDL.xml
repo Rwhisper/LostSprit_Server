@@ -123,8 +123,12 @@
     <int name ="roomNumber"/>
   </packet>
   <packet name ="C_RankList">
-  </packet>
+  </packet> 
   <packet name ="C_LeaveRoom">
   </packet>
+  <packet name ="C_Ready">
+    <bool name ="result"/>
+  </packet>
+  
   
 </PDL>
