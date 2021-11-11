@@ -13,8 +13,8 @@ namespace Server
 	{
 		public int SessionId { get; set; }
 		public string PlayerId { get; set; }
-		public string NickName { get; set; }
 		public string Attr { get; set; }
+		public bool isReady { get; set; }
 		public GameRoom Room { get; set; }
 		// 위치
 		public float PosX { get; set; }

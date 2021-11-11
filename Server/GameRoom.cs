@@ -12,7 +12,7 @@ namespace Server
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
         public int Roomid { get; set; }
-        public string RoomName { get; set; }
+        public string Title { get; set; }
         public string Host { get; set; }
         public int MaxPlayer { get; set; }
         public int NowPlayer { get; set; }
@@ -31,17 +31,7 @@ namespace Server
             NowPlayer = 0;
             State = false;
             Stage = "1";
-        }
-
-        public void LeaveHost(ClientSession session)
-        {
-            foreach(ClientSession s in _sessions)
-            {
-                S_RoomConnFaild pkt = new S_RoomConnFaild();
-                pkt.result = 0;
-                Broadcast(pkt.Write());
-            }
-        }
+        }      
 
         public void Flush()
         {
@@ -91,14 +81,12 @@ namespace Server
 
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-
             ClientSession Mysession;
             Mysession = _sessions.Find(x => x.SessionId == session.SessionId);
             Mysession.Attr = packet.attr;
             Mysession.PosX = packet.posX;
             Mysession.PosY = packet.posY;
             Mysession.PosZ = packet.posZ;
-
 
 
             _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
@@ -136,9 +124,19 @@ namespace Server
             
             Broadcast(enter.Write());
         }
-
+        public void LeaveHost(ClientSession session)
+        {
+            foreach (ClientSession s in _sessions)
+            {
+                S_RoomConnFaild pkt = new S_RoomConnFaild();
+                pkt.result = 0;
+                s.Room = null;
+                Broadcast(pkt.Write());
+            }
+        }
         public void Leave(ClientSession session)
         {
+            session.Room = null;
             // 플레이어를 제거하고
             _sessions.Remove(session);
             --NowPlayer;

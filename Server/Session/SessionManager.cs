@@ -8,13 +8,13 @@ namespace Server
 /// <summary>
 /// 전체 접속한 유저들 관리하는 클래스
 /// </summary>
-	class SessionManager : IJobQueue
+	class SessionManager 
 	{
 		static SessionManager _session = new SessionManager();
 		public static SessionManager Instance { get { return _session; } }
 		DataBase db;
 
-		JobQueue _jobQueue = new JobQueue();
+		
 
 		int _sessionId = 0;
 		int _roomId = 1;
@@ -30,11 +30,7 @@ namespace Server
 
 
 		object _lock = new object();
-
-		public void Push(Action job)
-		{
-			_jobQueue.Push(job);
-		}
+	
 
 		public void Flush()
 		{
@@ -46,7 +42,10 @@ namespace Server
 			////Console.WriteLine($"Flushed {_pendingList.Count} items");
 			//_pendingList.Clear();
 		}
-
+		/// <summary>
+		/// 처음 서버에 접속했을때 고유 번호 부여
+		/// </summary>
+		/// <returns></returns>
 		public ClientSession Generate()
 		{
 			lock (_lock)
@@ -74,7 +73,10 @@ namespace Server
 		}
 
 
-
+		/// <summary>
+		/// 세션풀에서 세션 삭제
+		/// </summary>
+		/// <param name="session"></param>
 		public void Remove(ClientSession session)
 		{
 			lock (_lock)
@@ -84,7 +86,7 @@ namespace Server
 		}
 
 		/// <summary>
-		/// 로그인 확인 함수
+		/// 로그인 확인 함수 result = 1 : 성공 , result = 2 : 실패, result =3 : 이미 로그인한 사람이 있어서 로그인 할 수 없음
 		/// </summary>
 		/// <param name="session"></param>
 		/// <param name="packet"></param>
@@ -98,25 +100,28 @@ namespace Server
                 {
 					if(_loginSession.TryGetValue(packet.id, out ClientSession s))
                     {
-						pkt.result = 1;
+						pkt.result = -1;
                     }
                     else
 					{
 						session.PlayerId = packet.id;
 						_loginSession.Add(packet.id, session);
-						pkt.result = 0;
+						pkt.result = 1;
 					}					
                 }
                 else
                 {
-					pkt.result = 1;
+					pkt.result = 0;
                 }
 				session.Send(pkt.Write());
-
 			}
             
         }
 		
+		/// <summary>
+		/// 로그아웃 로그아웃 
+		/// </summary>
+		/// <param name="session"></param>
 		public void Logout(ClientSession session)
         {
             lock (_lock)
@@ -143,7 +148,7 @@ namespace Server
 					gm.host = room.Host;
 					gm.nowPlayer = room.NowPlayer;
 					gm.maxPlayer = room.MaxPlayer;
-					gm.title = room.RoomName;
+					gm.title = room.Title;
 					gm.stage = room.Stage;
 					gm.state = room.State;
                     if (!room.State)
@@ -169,23 +174,26 @@ namespace Server
         }
 
 		public void LeaveGame(ClientSession session)
-
         {
-			if(session.Room != null)
+            lock (_lock)
             {
-				if(_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
-                {
-					if(session.PlayerId == room.Host)
-                    {
-						room.LeaveHost(session);
-						_gameRoom.Remove(session.Room.Roomid);
-                    }
-                    else
+				if (session.Room != null)
+				{
+					if (_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
 					{
-						room.Leave(session);
+						if (session.PlayerId == room.Host)
+						{
+							room.LeaveHost(session);
+							_gameRoom.Remove(session.Room.Roomid);
+						}
+						else
+						{
+							room.Leave(session);
+						}
 					}
-                }
-            }
+				}
+			}
+			
         }
 		/// <summary>
 		/// 룸생성 요청을 처리
@@ -225,6 +233,8 @@ namespace Server
 					if (room.MaxPlayer < room.NowPlayer)
 					{
 						room.Push(() => room.Enter(session));
+						
+						
 					}
 					else
 					{
@@ -247,28 +257,32 @@ namespace Server
 		/// 방에서 나가기
 		/// </summary>
 		/// <param name="session"></param>
-			public void LeaveRoomSession(ClientSession session)
+		public void LeaveRoomSession(ClientSession session)
 		{
-			S_RoomConnFaild pkt = new S_RoomConnFaild();
-			if (_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
-			{
-				room.Leave(session);
-				session.Room.Roomid = 0;
-				if(room.Host == session.PlayerId)
-                {
-					room.LeaveHost(session);
-					_gameRoom.Remove(session.Room.Roomid);
-					pkt.result = 5;
-                }
-			}
-            else
+            lock (_lock)
             {
-				pkt.result = 4;
-            }
-			session.Send(pkt.Write());
+				S_RoomConnFaild pkt = new S_RoomConnFaild();
+				if (_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
+				{
+					room.Leave(session);
+					session.Room.Roomid = 0;
+					if (room.Host == session.PlayerId)
+					{
+						room.LeaveHost(session);
+						_gameRoom.Remove(session.Room.Roomid);
+						pkt.result = 5;
+					}
+				}
+				else
+				{
+					pkt.result = 4;
+				}
+				session.Send(pkt.Write());
+			}
 			
 
 		}
+
 
 
 

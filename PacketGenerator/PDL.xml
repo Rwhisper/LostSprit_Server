@@ -71,9 +71,30 @@
       <string name ="attr"/>
     </list>
   </packet>
+	<packet name ="S_EnterRoomOk">
+		<string name ="stage"/>
+		<string name ="maxPlayer"/>
+		<string name ="nowPlayer"/>		
+		<list name = "player">
+			<string name ="attr"/>
+			<bool name ="isSelf"/>
+			<string name ="playerId"/>
+			<float name ="posX"/>
+			<float name ="posY"/>
+			<float name ="posZ"/>
+			<float name ="rotX"/>
+			<float name ="rotY"/>
+			<float name ="rotZ"/>
+			<float name ="rotW"/>
+			<bool name ="isReady"/>
+		</list>
+	</packet>
   <packet name ="S_RoomConnFaild">
     <int name ="result"/>
   </packet>
+	<pacekt name ="S_StageChange">
+		<string name ="stageCode"/>
+	</pacekt>
   <!--C - 클라이언트에서 보내는 패킷-->
   <packet name ="C_Login">
     <string name ="id"/>
