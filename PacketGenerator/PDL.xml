@@ -3,6 +3,7 @@
   <!--S - 서버에서 보내는 패킷-->
   <packet name ="S_LoginResult">
     <int name ="result"/>
+    <string name ="id"/>
   </packet>
 	<packet name ="S_BroadcastEnterGame">
 		<string name ="playerId"/>
@@ -40,8 +41,7 @@
   <packet name ="S_BroadCastDestroyItem">
     <int name ="itemId"/>
   </packet>
-  <packet name ="S_BroadCastGameOver">
-
+  <packet name ="S_BroadCastGameOver">    
   </packet>
   <packet name="S_BroadCastDropItem">
     <int name ="itemId"/>
@@ -73,28 +73,54 @@
   </packet>
 	<packet name ="S_EnterRoomOk">
 		<string name ="stage"/>
-		<string name ="maxPlayer"/>
-		<string name ="nowPlayer"/>		
-		<list name = "player">
-			<string name ="attr"/>
-			<bool name ="isSelf"/>
-			<string name ="playerId"/>
-			<float name ="posX"/>
-			<float name ="posY"/>
-			<float name ="posZ"/>
-			<float name ="rotX"/>
-			<float name ="rotY"/>
-			<float name ="rotZ"/>
-			<float name ="rotW"/>
-			<bool name ="isReady"/>
+		<int name ="maxPlayer"/>
+		<int name ="nowPlayer"/>		
+		<list name = "playerReady">
+      <string name="playerId"/>
+      <stirng name ="status"/>      
 		</list>
 	</packet>
   <packet name ="S_RoomConnFaild">
     <int name ="result"/>
   </packet>
+  <packet name="S_BroadCastEnterRoom">
+    <string name="playerId"/>
+  </packet>
 	<pacekt name ="S_StageChange">
 		<string name ="stageCode"/>
 	</pacekt>
+  <packet name ="S_NewRanking">    
+  </packet>
+  <packet name ="S_Ready">
+    <list name ="playerReady">
+      <string name ="playerId"/>
+      <string name ="status"/>
+    </list>
+  </packet>
+  <packet name ="S_GameStart">
+    <string name ="stageCode"/>
+    <list name ="playerReady">
+      <string name ="playerId"/>
+      <string name ="status"/>
+    </list>
+  </packet>
+  <packet name="S_GameClear">
+    <string name ="clearTime"/>
+    <string name ="stage"/>
+    <list name ="player">
+      <string name ="playerId"/>
+    </list>
+  </packet>
+  <pakcet name ="S_GameStartError">
+    <int name ="result"/>
+  </pakcet>
+  
+  <pacekt name = "S_GameOver">
+  </pacekt>
+  
+  
+  
+  
   <!--C - 클라이언트에서 보내는 패킷-->
   <packet name ="C_Login">
     <string name ="id"/>
@@ -103,7 +129,9 @@
   <packet name ="C_Logout">
   </packet>
 	<packet name ="C_LeaveGame">
-	</packet>  
+	</packet>
+  <packet name ="C_GameStart">
+  </packet>
 	<packet name ="C_Move">
 		<float name ="posX"/>
 		<float name ="posY"/>
@@ -135,13 +163,13 @@
   <packet name ="C_RoomList">
   </packet>
   <packet name ="C_CreateRoom">
-    <string name ="RoomName"/>
+    <string name ="title"/>
     <int name ="maxUser"/>
   </packet>
   <packet name ="C_RoomRefresh">
   </packet>
   <packet name ="C_RoomEnter">
-    <int name ="roomNumber"/>
+    <int name ="roomId"/>
   </packet>
   <packet name ="C_RankList">
   </packet> 
@@ -149,6 +177,13 @@
   </packet>
   <packet name ="C_Ready">
     <bool name ="result"/>
+  </packet>
+  <packet name ="C_GameClear">
+    <string name ="clearTime"/>
+  </packet>
+  <packet name ="C_GameStart">
+  </packet>
+  <packet name ="C_GameRestart">
   </packet>
   
   

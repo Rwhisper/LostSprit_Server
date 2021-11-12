@@ -18,6 +18,19 @@ namespace Server
         public int NowPlayer { get; set; }
         public bool State { get; set; }
         public string Stage { get; set; }
+        public string StartGameTime { get; set; }
+        public string EndGameTime { get; set; }
+        public bool isFireReady { get; set; }
+        public bool isWaterReady { get; set; }
+
+
+        public List<ClientSession> GetSessions()
+        {
+            List<ClientSession> s = new List<ClientSession>();
+            s = this._sessions;
+
+            return s;
+        }
         public void Push(Action job)
         {
             _jobQueue.Push(job);
@@ -176,6 +189,13 @@ namespace Server
             rot.rotZ = session.RotX;
             rot.rotW = session.RotW;
             Broadcast(rot.Write());
+        }
+
+        public void GameOver(ClientSession session)
+        {
+            C_GameOver gameOverPacket = new C_GameOver();
+            StartGameTime = DateTime.Now.ToString();            
+            Broadcast(gameOverPacket.Write());
         }
 
         public void DestroyItem(ClientSession session, C_DestroyItem packet)

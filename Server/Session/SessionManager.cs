@@ -283,7 +283,40 @@ namespace Server
 
 		}
 
+		public void GameClear(ClientSession session, C_GameClear packet)
+        {
+            lock (_lock)
+            {
+				if (session.PlayerId == session.Room.Host)
+				{
+					GameRoom room = session.Room;
+					DateTime startTime = Convert.ToDateTime(room.StartGameTime);
+					DateTime endTime = DateTime.Now;
+					TimeSpan dateDiff = endTime - startTime;
+					int diffHour = dateDiff.Hours;
+					int diffMinute = dateDiff.Minutes;
+					int diffSecond = dateDiff.Seconds;
+					string diffTime = diffHour + ":" + diffMinute + ":" + diffSecond;
+					string Stage = session.Room.Stage;
 
+					List<ClientSession> sessions = room.GetSessions();
+					foreach(ClientSession cs in sessions)
+                    {
+						if(db.Insertranking(Stage, cs.PlayerId, diffTime))
+                        {
+							
+                        }
+                    }
+					if (_gameRoom.TryGetValue(session.Room.Roomid ,out  GameRoom r))
+                    {
+						
+
+					}
+					
+				}
+			}
+			
+        }	
 
 
 	}

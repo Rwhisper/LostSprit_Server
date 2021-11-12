@@ -8,13 +8,19 @@ class PacketHandler
 {
 	public static void C_LoginHandler(PacketSession session, IPacket packet)
 	{
+		C_Login loginPacket = packet as C_Login;
+		ClientSession clientSession = session as ClientSession;
+
+		SessionManager.Instance.Login(clientSession, loginPacket);
 
 	}
 	public static void C_LogoutHandler(PacketSession session, IPacket packet)
 	{
+		ClientSession clientSession = session as ClientSession;
 
+		SessionManager.Instance.Logout(clientSession);
 	}
-
+	
 	public static void C_LeaveGameHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
@@ -75,11 +81,15 @@ class PacketHandler
 		C_DestroyItem destroyItem = packet as C_DestroyItem;
 		ClientSession clientSession = session as ClientSession;
 
-
+		// 아직
 		GameRoom room = clientSession.Room;
 		room.Push(
 			() => room.DestroyItem(clientSession, destroyItem)
 		);
+	}
+	public static void C_CreateRoomHandler(PacketSession session, IPacket packet)
+	{
+
 	}
 	public static void C_GameOverHandler(PacketSession session, IPacket packet)
 	{
@@ -87,6 +97,8 @@ class PacketHandler
 		C_GameOver enterPacket = packet as C_GameOver;
 		ClientSession clientSession = session as ClientSession;
 
+		GameRoom room = clientSession.Room;
+		
 
 	}
 	public static void C_DropItemHandler(PacketSession session, IPacket packet)
@@ -100,6 +112,9 @@ class PacketHandler
 	}
 	public static void C_RoomListHandler(PacketSession session, IPacket packet)
 	{
+		ClientSession clientSession = session as ClientSession;
+
+		SessionManager.Instance.ListRoom(clientSession);
 
 	}
 	public static void C_RoomRefreshHandler(PacketSession session, IPacket packet)
@@ -112,8 +127,16 @@ class PacketHandler
 	}
 	public static void C_LeaveRoomHandler(PacketSession session, IPacket packet)
 	{
+		ClientSession clientSession = session as ClientSession;
 
-	}
+		if (clientSession.Room == null)
+			return;
+
+        GameRoom room = clientSession.Room;
+        room.Push(
+            () => room.Leave(clientSession)
+        );
+    }
 	public static void C_RankListHandler(PacketSession session, IPacket packet)
 	{
 
