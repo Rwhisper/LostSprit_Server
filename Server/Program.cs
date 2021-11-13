@@ -12,13 +12,13 @@ namespace Server
 	class Program
 	{
 		static Listener _listener = new Listener();
-		public static GameRoom Room = new GameRoom();
+		//public static GameRoom Room = new GameRoom();
 
-		static void FlushRoom()
-		{
-			Room.Push(() => Room.Flush());
-			JobTimer.Instance.Push(FlushRoom, 25);
-		}
+		//static void FlushRoom()
+		//{
+		//	Room.Push(() => Room.Flush());
+		//	JobTimer.Instance.Push(FlushRoom, 25);
+		//}
 
 		static void Main(string[] args) 
 		{
@@ -32,11 +32,11 @@ namespace Server
 			Console.WriteLine("Listening...");
 
 			//FlushRoom();
-			JobTimer.Instance.Push(FlushRoom);
+			//JobTimer.Instance.Push(FlushRoom);
 
 			while (true)
 			{
-				JobTimer.Instance.Flush();
+				//JobTimer.Instance.Flush();
 			}
 		}
 	}

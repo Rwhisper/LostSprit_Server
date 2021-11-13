@@ -136,7 +136,7 @@ namespace Server
 		/// <summary>
 		/// 룸 리스트 요청 패킷이 넘어 올때 실행
 		/// </summary>
-		public void ListRoom(ClientSession session)
+		public void RoomList(ClientSession session)
         {			
 			lock (_lock)
             {
@@ -173,6 +173,26 @@ namespace Server
 			}			
         }
 
+		public void RankingLIst(ClientSession session, C_RankList packet)
+        {
+            lock (_lock)
+            {
+				List<Ranking> dbRankList = new List<Ranking>();
+				List<S_RankList.Rank> pktRankList = new List<S_RankList.Rank>();
+				dbRankList = db.Selectranking(packet.stageCode);
+				foreach (Ranking r in dbRankList)
+				{
+					S_RankList.Rank pktRank = new S_RankList.Rank();
+					pktRank.clearTime = r.cleartime;
+					pktRank.id = r.userid;
+					pktRank.stage = r.stagecode;
+					pktRankList.Add(pktRank);
+				}
+				S_RankList pkt = new S_RankList();
+				pkt.ranks = pktRankList;
+				session.Send(pkt.Write());
+			}			
+		}
 		public void LeaveGame(ClientSession session)
         {
             lock (_lock)
@@ -183,16 +203,17 @@ namespace Server
 					{
 						if (session.PlayerId == room.Host)
 						{
-							room.LeaveHost(session);
+							room.Push(()=>room.LeaveHost(session));
 							_gameRoom.Remove(session.Room.Roomid);
 						}
 						else
 						{
-							room.Leave(session);
+							room.Push(()=>room.Leave(session));
 						}
 					}
 				}
 			}
+
 			
         }
 		/// <summary>

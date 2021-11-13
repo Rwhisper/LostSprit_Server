@@ -37,12 +37,16 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_BroadCastGameOver, PacketHandler.S_BroadCastGameOverHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastDropItem, MakePacket<S_BroadCastDropItem>);
 		_handler.Add((ushort)PacketID.S_BroadCastDropItem, PacketHandler.S_BroadCastDropItemHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadCastReady, MakePacket<S_BroadCastReady>);
+		_handler.Add((ushort)PacketID.S_BroadCastReady, PacketHandler.S_BroadCastReadyHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastItemEvent, MakePacket<S_BroadCastItemEvent>);
 		_handler.Add((ushort)PacketID.S_BroadCastItemEvent, PacketHandler.S_BroadCastItemEventHandler);
 		_makeFunc.Add((ushort)PacketID.S_RoomList, MakePacket<S_RoomList>);
 		_handler.Add((ushort)PacketID.S_RoomList, PacketHandler.S_RoomListHandler);
 		_makeFunc.Add((ushort)PacketID.S_RankList, MakePacket<S_RankList>);
 		_handler.Add((ushort)PacketID.S_RankList, PacketHandler.S_RankListHandler);
+		_makeFunc.Add((ushort)PacketID.S_CreateRoomResult, MakePacket<S_CreateRoomResult>);
+		_handler.Add((ushort)PacketID.S_CreateRoomResult, PacketHandler.S_CreateRoomResultHandler);
 		_makeFunc.Add((ushort)PacketID.S_EnterRoomOk, MakePacket<S_EnterRoomOk>);
 		_handler.Add((ushort)PacketID.S_EnterRoomOk, PacketHandler.S_EnterRoomOkHandler);
 		_makeFunc.Add((ushort)PacketID.S_RoomConnFaild, MakePacket<S_RoomConnFaild>);
@@ -57,6 +61,10 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_GameStart, PacketHandler.S_GameStartHandler);
 		_makeFunc.Add((ushort)PacketID.S_GameClear, MakePacket<S_GameClear>);
 		_handler.Add((ushort)PacketID.S_GameClear, PacketHandler.S_GameClearHandler);
+		_makeFunc.Add((ushort)PacketID.S_GameOver, MakePacket<S_GameOver>);
+		_handler.Add((ushort)PacketID.S_GameOver, PacketHandler.S_GameOverHandler);
+		_makeFunc.Add((ushort)PacketID.S_GameStartFaild, MakePacket<S_GameStartFaild>);
+		_handler.Add((ushort)PacketID.S_GameStartFaild, PacketHandler.S_GameStartFaildHandler);
 
 	}
 

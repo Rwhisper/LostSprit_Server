@@ -77,7 +77,7 @@ namespace Server
                 {
                     MySqlCommand cmd = new MySqlCommand($"SELECT * FROM user WHERE id = '{col}'", connection);
                     MySqlDataReader rdr = cmd.ExecuteReader();
-                    user user = new user();
+                    User user = new User();
                     while (rdr.Read())
                     {
                         user.password = string.Format("{0}", rdr["password"]);
@@ -163,7 +163,7 @@ namespace Server
             return result;
         }
         //비밀번호 수정
-        public user Updateuser(string id, string password)
+        public User Updateuser(string id, string password)
         {
             if (OpenConnection() == true)
             {
@@ -251,17 +251,17 @@ namespace Server
                 }
                 return result;
         }
-        public List<ranking> Selectranking(string stage)
+        public List<Ranking> Selectranking(string stage)
         {
-            List<ranking> Lid = null;
+            List<Ranking> Lid = null;
             if (OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand($"SELECT * FROM ranking where stagecode = {stage} order by cleartime desc", connection);
                 MySqlDataReader rdr = cmd.ExecuteReader();
-                Lid = new List<ranking>();
+                Lid = new List<Ranking>();
                 while (rdr.Read())
                 {
-                    Lid.Add((new ranking() { rank = Convert.ToInt32(rdr["rank"]), stagecode = string.Format("{0}", rdr["stagecode"]), userid = string.Format("{0}", rdr["userid"]), cleartime = string.Format("{0}", rdr["cleartime"]) }));
+                    Lid.Add((new Ranking() { rank = Convert.ToInt32(rdr["rank"]), stagecode = string.Format("{0}", rdr["stagecode"]), userid = string.Format("{0}", rdr["userid"]), cleartime = string.Format("{0}", rdr["cleartime"]) }));
                 }
 
                 foreach (var item in Lid)

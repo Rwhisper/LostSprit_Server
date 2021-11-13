@@ -4,52 +4,52 @@ using System.Text;
 
 namespace Server
 {
-    class user
+    class User
     {
         public string id;
         public string password;
 
-        public user()
+        public User()
         {
 
         }
 
-        public user(string id, string password)
+        public User(string id, string password)
         {
             this.id = id;
             this.password = password;
         }
     }
-    class stage
+    class Stage
     {
         public string stagecode;
         public string stagename;
         public string stagetema;
 
-        public stage()
+        public Stage()
         {
 
         }
-        public stage(string stagecode, string stagename, string stagetema)
+        public Stage(string stagecode, string stagename, string stagetema)
         {
             this.stagecode = stagecode;
             this.stagename = stagename;
             this.stagetema = stagetema;
         }
     }
-    class ranking
+    class Ranking
     {
         public int rank;
         public string stagecode;
         public string userid;
         public string cleartime;
 
-        public ranking()
+        public Ranking()
         {
 
         }
 
-        public ranking(int rank, string stagecode, string userid, string cleartime)
+        public Ranking(int rank, string stagecode, string userid, string cleartime)
         {
             this.rank = rank;
             this.stagecode = stagecode;
