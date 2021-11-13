@@ -228,12 +228,11 @@ namespace Server
         {
             lock (_lock)
             {
-				if (_gameRoom.TryGetValue(packet.roomNumber, out GameRoom room))
+				if (_gameRoom.TryGetValue(packet.roomId, out GameRoom room))
 				{
-					if (room.MaxPlayer < room.NowPlayer)
+					if (room.MaxPlayer > room.NowPlayer)
 					{
 						room.Push(() => room.Enter(session));
-						
 						
 					}
 					else
@@ -247,8 +246,8 @@ namespace Server
 				{
 					S_RoomConnFaild pkt = new S_RoomConnFaild();
 					pkt.result = 3;
-					session.Room.Roomid = packet.roomNumber;
-					session.Send(pkt.Write());
+					session.Room.Roomid = packet.roomId;
+					session.Send(pkt.Write()); 
 				}
 			}			
 		}

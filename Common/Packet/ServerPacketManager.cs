@@ -25,6 +25,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_Logout, PacketHandler.C_LogoutHandler);
 		_makeFunc.Add((ushort)PacketID.C_LeaveGame, MakePacket<C_LeaveGame>);
 		_handler.Add((ushort)PacketID.C_LeaveGame, PacketHandler.C_LeaveGameHandler);
+		_makeFunc.Add((ushort)PacketID.C_GameStart, MakePacket<C_GameStart>);
+		_handler.Add((ushort)PacketID.C_GameStart, PacketHandler.C_GameStartHandler);
 		_makeFunc.Add((ushort)PacketID.C_Move, MakePacket<C_Move>);
 		_handler.Add((ushort)PacketID.C_Move, PacketHandler.C_MoveHandler);
 		_makeFunc.Add((ushort)PacketID.C_Rot, MakePacket<C_Rot>);
@@ -53,6 +55,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_Ready, PacketHandler.C_ReadyHandler);
 		_makeFunc.Add((ushort)PacketID.C_GameClear, MakePacket<C_GameClear>);
 		_handler.Add((ushort)PacketID.C_GameClear, PacketHandler.C_GameClearHandler);
+		_makeFunc.Add((ushort)PacketID.C_GameRestart, MakePacket<C_GameRestart>);
+		_handler.Add((ushort)PacketID.C_GameRestart, PacketHandler.C_GameRestartHandler);
 
 	}
 

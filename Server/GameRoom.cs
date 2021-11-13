@@ -87,8 +87,19 @@ namespace Server
         {
             session.Room = this;
             ++NowPlayer;
-            _sessions.Add(session);            
-
+            _sessions.Add(session);
+            S_EnterRoomOk pkt = new S_EnterRoomOk();
+            pkt.stage = this.Stage;
+            pkt.maxPlayer = this.MaxPlayer;
+            pkt.nowPlayer = this.NowPlayer;
+            foreach(ClientSession s in _sessions)
+            {
+                pkt.playerReadys.Add(s.PlayerId);
+            }
+            
+            session.Send(pkt.Write());
+            ;
+            pkt.players =
 
         }
 
