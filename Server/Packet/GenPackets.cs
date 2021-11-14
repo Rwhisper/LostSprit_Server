@@ -6,48 +6,49 @@ using ServerCore;
 
 public enum PacketID
 {
-	S_LoginResult = 1,
-	S_BroadcastEnterGame = 2,
-	S_BroadcastLeaveGame = 3,
-	S_PlayerList = 4,
-	S_BroadCastRot = 5,
-	S_BroadCastMove = 6,
-	S_BroadCastDestroyItem = 7,
-	S_BroadCastGameOver = 8,
-	S_BroadCastDropItem = 9,
-	S_BroadCastReady = 10,
-	S_BroadCastItemEvent = 11,
-	S_RoomList = 12,
-	S_RankList = 13,
-	S_CreateRoomResult = 14,
-	S_EnterRoomOk = 15,
-	S_RoomConnFaild = 16,
-	S_BroadCastEnterRoom = 17,
-	S_NewRanking = 18,
-	S_Ready = 19,
-	S_GameStart = 20,
-	S_GameClear = 21,
-	S_GameOver = 22,
-	S_GameStartFaild = 23,
-	C_Login = 24,
-	C_Logout = 25,
-	C_LeaveGame = 26,
-	C_GameStart = 27,
-	C_Move = 28,
-	C_Rot = 29,
-	C_Enter = 30,
-	C_DestroyItem = 31,
-	C_GameOver = 32,
-	C_DropItem = 33,
-	C_RoomList = 34,
-	C_CreateRoom = 35,
-	C_RoomRefresh = 36,
-	C_RoomEnter = 37,
-	C_RankList = 38,
-	C_LeaveRoom = 39,
-	C_Ready = 40,
-	C_GameClear = 41,
-	C_GameRestart = 42,
+	S_EnterGame = 1,
+	S_LoginResult = 2,
+	S_BroadcastEnterGame = 3,
+	S_BroadcastLeaveGame = 4,
+	S_PlayerList = 5,
+	S_BroadCastRot = 6,
+	S_BroadCastMove = 7,
+	S_BroadCastDestroyItem = 8,
+	S_BroadCastGameOver = 9,
+	S_BroadCastDropItem = 10,
+	S_BroadCastReady = 11,
+	S_BroadCastItemEvent = 12,
+	S_RoomList = 13,
+	S_RankList = 14,
+	S_CreateRoomResult = 15,
+	S_EnterRoomOk = 16,
+	S_RoomConnFaild = 17,
+	S_BroadCastEnterRoom = 18,
+	S_NewRanking = 19,
+	S_Ready = 20,
+	S_GameStart = 21,
+	S_GameClear = 22,
+	S_GameOver = 23,
+	S_GameStartFaild = 24,
+	C_Login = 25,
+	C_Logout = 26,
+	C_LeaveGame = 27,
+	C_GameStart = 28,
+	C_Move = 29,
+	C_Rot = 30,
+	C_Enter = 31,
+	C_DestroyItem = 32,
+	C_GameOver = 33,
+	C_DropItem = 34,
+	C_RoomList = 35,
+	C_CreateRoom = 36,
+	C_RoomRefresh = 37,
+	C_RoomEnter = 38,
+	C_RankList = 39,
+	C_LeaveRoom = 40,
+	C_Ready = 41,
+	C_GameClear = 42,
+	C_GameRestart = 43,
 	
 }
 
@@ -58,6 +59,38 @@ public interface IPacket
 	ArraySegment<byte> Write();
 }
 
+
+public class S_EnterGame : IPacket
+{
+	public int sessionId;
+
+	public ushort Protocol { get { return (ushort)PacketID.S_EnterGame; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		this.sessionId = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_EnterGame), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes(this.sessionId), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
 
 public class S_LoginResult : IPacket
 {

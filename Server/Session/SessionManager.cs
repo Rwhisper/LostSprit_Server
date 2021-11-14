@@ -17,11 +17,12 @@ namespace Server
 		
 
 		int _sessionId = 0;
-		int _roomId = 1;
+		
 		/// <summary>
 		/// 서버에 접속한 유저 정보
 		/// </summary>
 		Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
+		int _roomId = 1;
 		/// <summary>
 		/// 로그인한 유저들의 정보
 		/// </summary>
@@ -367,17 +368,8 @@ namespace Server
         {
 			GameRoom Room = session.Room;
 
-        }
-
-		public void GameClear()
-        {
-
-        }
-
-		public void GameOver()
-        {
-
-        }
+        }			
+	
 
 	}
 }

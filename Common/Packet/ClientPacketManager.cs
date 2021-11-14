@@ -19,6 +19,8 @@ public class PacketManager
 		
 	public void Register()
 	{
+		_makeFunc.Add((ushort)PacketID.S_EnterGame, MakePacket<S_EnterGame>);
+		_handler.Add((ushort)PacketID.S_EnterGame, PacketHandler.S_EnterGameHandler);
 		_makeFunc.Add((ushort)PacketID.S_LoginResult, MakePacket<S_LoginResult>);
 		_handler.Add((ushort)PacketID.S_LoginResult, PacketHandler.S_LoginResultHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadcastEnterGame, MakePacket<S_BroadcastEnterGame>);

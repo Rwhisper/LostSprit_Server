@@ -32,8 +32,8 @@ namespace Server
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
 
-			// 룸 안에 밀어 넣는다.
-            //Program.Room.Push(() => Program.Room.Enter(this));
+            // 룸 안에 밀어 넣는다.
+            Program.Room.Push(() => Program.Room.Enter(this));
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

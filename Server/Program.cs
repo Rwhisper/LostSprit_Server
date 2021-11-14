@@ -12,15 +12,16 @@ namespace Server
 	class Program
 	{
 		static Listener _listener = new Listener();
-		//public static GameRoom Room = new GameRoom();
+        // 방이 하나일때는 이렇게 사용해도됨
+        public static GameRoom Room = new GameRoom();
 
-		//static void FlushRoom()
-		//{
-		//	Room.Push(() => Room.Flush());
-		//	JobTimer.Instance.Push(FlushRoom, 25);
-		//}
+        static void FlushRoom()
+        {
+            Room.Push(() => Room.Flush());
+            JobTimer.Instance.Push(FlushRoom, 25);
+        }
 
-		static void Main(string[] args) 
+        static void Main(string[] args) 
 		{
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
@@ -31,13 +32,14 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-			//FlushRoom();
-			//JobTimer.Instance.Push(FlushRoom);
+            //계속해서 뿌려줌FlushRoom();
+            JobTimer.Instance.Push(FlushRoom);
+            
 
-			while (true)
+            while (true)
 			{
-				//JobTimer.Instance.Flush();
-			}
+                JobTimer.Instance.Flush();
+            }
 		}
 	}
 }

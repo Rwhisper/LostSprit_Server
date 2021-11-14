@@ -22,13 +22,11 @@ namespace ServerCore
 			// 수신 시작
 			// backlog : 최대 대기수
 			_listenSocket.Listen(backlog);
-
-			for (int i = 0; i < register; i++)
-			{
-				SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-				args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
-				RegisterAccept(args);
-			}
+			
+			SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+			args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+			RegisterAccept(args);
+			
 		}
 
 		void RegisterAccept(SocketAsyncEventArgs args)

@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <PDL>
   <!--S - 서버에서 보내는 패킷-->
+	<packet name ="S_EnterGame">
+		<int name ="sessionId"/>
+	</packet>
   <packet name ="S_LoginResult">
     <int name ="result"/>
     <string name ="id"/>

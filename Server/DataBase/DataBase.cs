@@ -90,9 +90,7 @@ namespace Server
                     else
                     {
                         result = -1;
-                    }                  
-                    
-                    
+                    }    
                     rdr.Close();
                 }
                 catch(Exception e)
@@ -104,10 +102,7 @@ namespace Server
                 {
                     CloseConnection();
                 }
-               
-                
             }
-
             return result;
         }
         //회원가입 중복확인
@@ -261,7 +256,7 @@ namespace Server
                 Lid = new List<Ranking>();
                 while (rdr.Read())
                 {
-                    Lid.Add((new Ranking() { rank = Convert.ToInt32(rdr["rank"]), stagecode = string.Format("{0}", rdr["stagecode"]), userid = string.Format("{0}", rdr["userid"]), cleartime = string.Format("{0}", rdr["cleartime"]) }));
+                    Lid.Add(new Ranking() { rank = Convert.ToInt32(rdr["rank"]), stagecode = string.Format("{0}", rdr["stagecode"]), userid = string.Format("{0}", rdr["userid"]), cleartime = string.Format("{0}", rdr["cleartime"]) });
                 }
 
                 foreach (var item in Lid)

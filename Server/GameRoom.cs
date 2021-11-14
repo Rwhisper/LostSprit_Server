@@ -45,18 +45,18 @@ namespace Server
             Stage = "1";
             isFireReady = false;
             isWaterReady = false;
-        }      
+        }
 
         // 지속적으로 패킷 모아서 보내기
-        //public void Flush()
-        //{
-        //    // N ^ 2
-        //    foreach (ClientSession s in _sessions)
-        //        s.Send(_pendingList);
+        public void Flush()
+        {
+            // N ^ 2
+            foreach (ClientSession s in _sessions)
+                s.Send(_pendingList);
 
-        //    //Console.WriteLine($"Flushed {_pendingList.Count} items");
-        //    _pendingList.Clear();
-        //}
+            //Console.WriteLine($"Flushed {_pendingList.Count} items");
+            _pendingList.Clear();
+        }
 
         public void CreateRoom(ClientSession session, int max)
         {
@@ -83,25 +83,29 @@ namespace Server
         /// <param name="session"></param>
         public void Enter(ClientSession session)
         {
+            // 새로들어온 유저에게 룸 객체 지엉
             session.Room = this;
-            ++NowPlayer;
-            _sessions.Add(session);
+            ++NowPlayer;            
             S_EnterRoomOk pkt = new S_EnterRoomOk();
             pkt.stage = this.Stage;
             pkt.maxPlayer = this.MaxPlayer;
             pkt.nowPlayer = this.NowPlayer;
-            S_EnterRoomOk.PlayerReady pr = new S_EnterRoomOk.PlayerReady();
-            S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
-            bEnterRoom.playerId = session.PlayerId;
-            Push(() => Broadcast(bEnterRoom.Write()));
+            S_EnterRoomOk.PlayerReady pr = new S_EnterRoomOk.PlayerReady();            
             foreach (ClientSession s in _sessions)
             {
                 pr.playerId = s.PlayerId;
                 pr.readyStatus = s.ReadyStatus;
                 pkt.playerReadys.Add(pr);
-            }            
+            }
             session.Send(pkt.Write());
-            Broadcast(bEnterRoom.Write());
+            // 새로 들어간방의 유저들에게 들어갔음을 알려준다.
+            S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
+            bEnterRoom.playerId = session.PlayerId;
+            _sessions.Add(session);
+            Push(() => Broadcast(bEnterRoom.Write()));
+           
+            
+           
 
         }
 
