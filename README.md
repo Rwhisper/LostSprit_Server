@@ -34,6 +34,7 @@ C# 소켓 통신 프로그램
  * 완성된 패킷 클래스
  * ![image](https://user-images.githubusercontent.com/73861946/141686504-c75de10a-c30b-4a75-9ff9-03209b644e83.png)
  * (전체 구조는 너무 많기 때문에 생략하였습니다 - PacketGenerator: Program.cs, Server : GenPacket.cs)
+ 
 - PacketManager : 패킷을 관리하는 클래스
  * 전체 패킷 핸들러 함수 저장과 그것을 실행하는 Action을 Dictionary에 저장
  * ![image](https://user-images.githubusercontent.com/73861946/141686327-b3286c0b-79e2-4747-b6af-4a76191b62e8.png)
@@ -43,6 +44,9 @@ C# 소켓 통신 프로그램
  * ![image](https://user-images.githubusercontent.com/73861946/141686429-1642cdc7-cbff-4900-b4e7-bdf5eb94136b.png)
  * 핸들러 함수가 실행하는 함수들
  * ![image](https://user-images.githubusercontent.com/73861946/141686647-b0c967c0-a2fc-4c00-93d6-601f10c355da.png)
+ * 패킷 정의 프로토콜(테스트용 패킷 포함)
+ * ![image](https://user-images.githubusercontent.com/73861946/141689264-42083539-bdfc-4d09-8951-f7f98383ee29.png)
+
 
 핸들러 함수까지오면 클라이언트측에서 데이터 관리한다.
 
