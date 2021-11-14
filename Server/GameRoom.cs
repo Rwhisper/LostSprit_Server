@@ -10,100 +10,107 @@ namespace Server
         List<ClientSession> _sessions = new List<ClientSession>();
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
-        Dictionary<string, Queue<string>> _room = new Dictionary<string, Queue<string>>();
-        
         public int Roomid { get; set; }
-        public string RoomName { get; set; }
+        public string Title { get; set; }
         public string Host { get; set; }
-        public int maxPlayer { get; set; }
-        public int nowPlayer { get; set; }
-        public DateTime startTime;
-        public int status { get; set; }
-        public GameRoom()
-        {
-            Roomid = 0;
-            Host = null;
-            maxPlayer = 0;
-            nowPlayer = 0;
-            status = 0;
-        }
+        public int MaxPlayer { get; set; }
+        public int NowPlayer { get; set; }
+        public bool State { get; set; }
+        public string Stage { get; set; }
+        public string StartGameTime { get; set; }
+        public string EndGameTime { get; set; }
+        public bool isFireReady { get; set; }
+        public bool isWaterReady { get; set; }
 
-        public void StartTimer()
+        
+        public List<ClientSession> GetSessions()
         {
-            startTime = DateTime.Now;
-        }
-        public string EndTimer()
-        {
-            DateTime endTime = DateTime.Now;
-            string time = null;
-            TimeSpan spanStart = new TimeSpan(startTime.Hour, startTime.Minute, startTime.Second, startTime.Millisecond);
-            TimeSpan spanEnd = new TimeSpan(endTime.Hour, endTime.Minute, endTime.Second, endTime.Millisecond);
-            time = spanEnd.Subtract(spanStart).ToString();
+            List<ClientSession> s = new List<ClientSession>();
+            s = this._sessions;
 
-            return time;
+            return s;
         }
-
         public void Push(Action job)
         {
             _jobQueue.Push(job);
         }
-       
-        public void Flush()
-        {
-            // N ^ 2
-            foreach (ClientSession s in _sessions)
-                s.Send(_pendingList);
 
-            //Console.WriteLine($"Flushed {_pendingList.Count} items");
-            _pendingList.Clear();
-        }
-
-        public void PlayStartGame()
+        public GameRoom()     
         {
-            status = 2;
-        }
+            Roomid = 0;
+            Host = null;
+            MaxPlayer = 0;
+            NowPlayer = 0;
+            State = false;
+            Stage = "1";
+            isFireReady = false;
+            isWaterReady = false;
+        }      
+
+        // 지속적으로 패킷 모아서 보내기
+        //public void Flush()
+        //{
+        //    // N ^ 2
+        //    foreach (ClientSession s in _sessions)
+        //        s.Send(_pendingList);
+
+        //    //Console.WriteLine($"Flushed {_pendingList.Count} items");
+        //    _pendingList.Clear();
+        //}
 
         public void CreateRoom(ClientSession session, int max)
         {
-            _sessions.Add(session);
+            session.Room = this;
             Host = session.PlayerId;
-            maxPlayer = max;
-            nowPlayer++;
-            status = 1;
+            MaxPlayer = max;
+            NowPlayer++;
+            _sessions.Add(session);
+            S_CreateRoomResult pkt = new S_CreateRoomResult();
+            Push(() => session.Send(pkt.Write()));
         }
 
-        public void Login(ClientSession session, C_Login packet)
+     
+
+        public void EnterLobby()
         {
-            if(packet.id == "test1" || packet.pwd == "1234")
-            {
-                Console.WriteLine("test1 접속 성공");
-                session.PlayerId = packet.id;
-                _sessions.Add(session);
-            }
+
         }
-
-        public void LeaveRoom(ClientSession session)
-        {
-            _sessions.Remove(session);
-            --nowPlayer;
-        }        
-
         public void Broadcast(ArraySegment<byte> segment)
         {
-            _pendingList.Add(segment);
+            
+            foreach (ClientSession s in _sessions)
+                s.Send(segment);
         }
-
+        /// <summary>
+        /// 캐릭터가 방에 접속 했을 때 실행
+        /// </summary>
+        /// <param name="session"></param>
         public void Enter(ClientSession session)
         {
-            session.Room = this; 
-            _sessions.Add(session);           
-
+            session.Room = this;
+            ++NowPlayer;
+            _sessions.Add(session);
+            S_EnterRoomOk pkt = new S_EnterRoomOk();
+            pkt.stage = this.Stage;
+            pkt.maxPlayer = this.MaxPlayer;
+            pkt.nowPlayer = this.NowPlayer;
+            S_EnterRoomOk.PlayerReady pr = new S_EnterRoomOk.PlayerReady();
+            S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
+            bEnterRoom.playerId = session.PlayerId;
+            Push(() => Broadcast(bEnterRoom.Write()));
+            foreach (ClientSession s in _sessions)
+            {
+                pr.playerId = s.PlayerId;
+                pr.readyStatus = s.ReadyStatus;
+                pkt.playerReadys.Add(pr);
+            }            
+            session.Send(pkt.Write());
+            Broadcast(bEnterRoom.Write());
 
         }
 
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-
             ClientSession Mysession;
             Mysession = _sessions.Find(x => x.SessionId == session.SessionId);
             Mysession.Attr = packet.attr;
@@ -114,7 +121,6 @@ namespace Server
 
             _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
             _sessions.Add(Mysession);
-
 
             // 새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
@@ -146,16 +152,66 @@ namespace Server
             
             Broadcast(enter.Write());
         }
-
+        /// <summary>
+        /// 호스트가 나가면 실행
+        /// </summary>
+        /// <param name="session"></param>
+        public void LeaveHost(ClientSession session)
+        {
+            foreach (ClientSession s in _sessions)
+            {
+                S_RoomConnFaild pkt = new S_RoomConnFaild();
+                pkt.result = 0;
+                s.Room = null;
+                Broadcast(pkt.Write());
+            }
+        }
         public void Leave(ClientSession session)
         {
+            session.Room = null;
             // 플레이어를 제거하고
             _sessions.Remove(session);
-
+            --NowPlayer;
             // 모두에게 알린다
             S_BroadcastLeaveGame leave = new S_BroadcastLeaveGame();
             leave.playerId = session.PlayerId;
             Broadcast(leave.Write());
+        }
+
+        /// <summary>
+        /// 플레이어가 레디를 할때 호출 packet.result = 0 : fire요청, packet.result = 1 : water요청
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="packet"></param>
+        public void Ready(ClientSession session, C_Ready packet)
+        {
+            S_BroadCastReady pkt = new S_BroadCastReady();
+            if (packet.result == 0)
+            {
+                if (!this.isFireReady)
+                {
+                    isFireReady = true;
+                    session.ReadyStatus = 0;
+                    pkt.playerID = session.PlayerId;
+                    pkt.result = packet.result;
+                }
+            }
+            else if(packet.result ==1)
+            {
+                if (!this.isWaterReady)
+                {
+                    isWaterReady = true;
+                    session.ReadyStatus = 0;
+                    pkt.playerID = session.PlayerId;
+                    pkt.result = packet.result;
+                }
+            }
+            Push(() => session.Send(pkt.Write()));
+
+        }
+        public void ReadyCancle(ClientSession session )
+        {
+
         }
 
         public void Move(ClientSession session, C_Move packet)
@@ -188,13 +244,49 @@ namespace Server
             rot.rotZ = session.RotX;
             rot.rotW = session.RotW;
             Broadcast(rot.Write());
+
+        }
+
+        public void GameStart(ClientSession session)
+        {
+            if(session.PlayerId == this.Host)
+            {
+                if(isFireReady && isWaterReady)
+                {
+                    S_GameStart pkt = new S_GameStart();
+                    Push(() => Broadcast(pkt.Write()));
+                }
+                else
+                {
+                    S_GameStartFaild pkt = new S_GameStartFaild();
+                    pkt.result = 1;
+                    Push(() => session.Send(pkt.Write()));
+                }
+            }
+        }
+        public void GameOver(ClientSession session)
+        {
+            C_GameOver gameOverPacket = new C_GameOver();
+            StartGameTime = DateTime.Now.ToString();            
+            Broadcast(gameOverPacket.Write());
+        }
+       
+
+        public void DropItem(ClientSession session , C_DropItem packet)
+        {
+            S_BroadCastDropItem pkt = new S_BroadCastDropItem();
+            pkt.itemId = packet.itemId;
+            pkt.posX = packet.posX;
+            pkt.posY = packet.posY;
+            pkt.posZ = packet.posZ;
+            Broadcast(pkt.Write());
         }
 
         public void DestroyItem(ClientSession session, C_DestroyItem packet)
         {
-            //S_BoradCastDestroyItem destroy = new S_BoradCastDestroyItem();
-            //destroy.item = packet.item;
-            //Broadcast(destroy.Write());
+            S_BroadCastDestroyItem pkt = new S_BroadCastDestroyItem();
+            pkt.itemId = packet.itemId;
+            Broadcast(pkt.Write());
         }
     }
 }
