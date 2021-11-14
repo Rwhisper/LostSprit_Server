@@ -337,5 +337,47 @@ namespace Server
         }
 
 
+		/// <summary>
+		/// 전체 랭킹 불러오기 (stage)
+		/// </summary>
+		/// <param name="stage"></param>
+		/// <returns></returns>
+		public List<Ranking> GetRankingList(string stage)
+        {
+			List<Ranking> _rankList = new List<Ranking>();
+
+
+			return _rankList;
+		}
+
+		/// <summary>
+		/// 한명의 랭킹 불러오기
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public List<Ranking> GetRanking(string id )
+        {
+			List<Ranking> _rankList = new List<Ranking>();
+
+
+			return _rankList;
+        }
+
+		public void GameStart(ClientSession session)
+        {
+			GameRoom Room = session.Room;
+
+        }
+
+		public void GameClear()
+        {
+
+        }
+
+		public void GameOver()
+        {
+
+        }
+
 	}
 }

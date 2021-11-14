@@ -71,10 +71,6 @@ namespace Server
 
      
 
-        public void EnterLobby()
-        {
-
-        }
         public void Broadcast(ArraySegment<byte> segment)
         {
             
