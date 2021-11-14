@@ -193,6 +193,10 @@ namespace Server
 				session.Send(pkt.Write());
 			}			
 		}
+		/// <summary>
+		/// 게임 나가기 요청
+		/// </summary>
+		/// <param name="session"></param>
 		public void LeaveGame(ClientSession session)
         {
             lock (_lock)
@@ -216,6 +220,9 @@ namespace Server
 
 			
         }
+	
+
+		
 		/// <summary>
 		/// 룸생성 요청을 처리
 		/// </summary>
@@ -277,66 +284,57 @@ namespace Server
 		/// 방에서 나가기
 		/// </summary>
 		/// <param name="session"></param>
-		public void LeaveRoomSession(ClientSession session)
-		{
-            lock (_lock)
-            {
-				S_RoomConnFaild pkt = new S_RoomConnFaild();
-				if (_gameRoom.TryGetValue(session.Room.Roomid, out GameRoom room))
-				{
-					room.Leave(session);
-					session.Room.Roomid = 0;
-					if (room.Host == session.PlayerId)
-					{
-						room.LeaveHost(session);
-						_gameRoom.Remove(session.Room.Roomid);
-						pkt.result = 5;
-					}
-				}
-				else
-				{
-					pkt.result = 4;
-				}
-				session.Send(pkt.Write());
-			}
-			
-
-		}
+	
 
 		public void GameClear(ClientSession session, C_GameClear packet)
         {
             lock (_lock)
             {
-				if (session.PlayerId == session.Room.Host)
-				{
-					GameRoom room = session.Room;
-					DateTime startTime = Convert.ToDateTime(room.StartGameTime);
-					DateTime endTime = DateTime.Now;
-					TimeSpan dateDiff = endTime - startTime;
-					int diffHour = dateDiff.Hours;
-					int diffMinute = dateDiff.Minutes;
-					int diffSecond = dateDiff.Seconds;
-					string diffTime = diffHour + ":" + diffMinute + ":" + diffSecond;
-					string Stage = session.Room.Stage;
-
-					List<ClientSession> sessions = room.GetSessions();
-					foreach(ClientSession cs in sessions)
+				if(session.Room == null || session.PlayerId != session.Room.Host)
+                {
+					return;
+                }
+				
+				GameRoom room = session.Room;				
+				string clearStage = session.Room.Stage;
+				string diffTime = GetClearTime(room.StartGameTime);
+				List<ClientSession> sessions = room.GetSessions();
+				S_GameClear pkt = new S_GameClear();
+				S_GameClear.Player player = new S_GameClear.Player();
+				List<S_GameClear.Player> playerList = new List<S_GameClear.Player>();
+				pkt.clearTime = diffTime;
+				pkt.stage = clearStage;
+				foreach (ClientSession cs in sessions)
+                {
+					db = new DataBase();
+					if(db.Insertranking(clearStage, cs.PlayerId, diffTime))
                     {
-						if(db.Insertranking(Stage, cs.PlayerId, diffTime))
-                        {
-							
-                        }
-                    }
-					if (_gameRoom.TryGetValue(session.Room.Roomid ,out  GameRoom r))
-                    {
-						
-
+						player.playerId = cs.PlayerId;
+						playerList.Add(player);
 					}
-					
-				}
+                }
+				room.Push(() => room.Broadcast(pkt.Write()));
+				
 			}
 			
         }	
+		/// <summary>
+		/// 게임 클리어시간 계산해주는 함수
+		/// </summary>
+		/// <param name="startGameTime"></param>
+		/// <returns></returns>
+		public string GetClearTime(string startGameTime)
+        {
+			string result = null;
+			DateTime startTime = Convert.ToDateTime(startGameTime);
+			DateTime endTime = DateTime.Now;
+			TimeSpan dateDiff = endTime - startTime;
+			int diffHour = dateDiff.Hours;
+			int diffMinute = dateDiff.Minutes;
+			int diffSecond = dateDiff.Seconds;
+			result = diffHour + ":" + diffMinute + ":" + diffSecond;
+			return result;
+        }
 
 
 	}

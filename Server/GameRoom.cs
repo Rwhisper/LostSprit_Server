@@ -57,6 +57,7 @@ namespace Server
         //    //Console.WriteLine($"Flushed {_pendingList.Count} items");
         //    _pendingList.Clear();
         //}
+
         public void CreateRoom(ClientSession session, int max)
         {
             session.Room = this;
@@ -269,12 +270,23 @@ namespace Server
             StartGameTime = DateTime.Now.ToString();            
             Broadcast(gameOverPacket.Write());
         }
+       
+
+        public void DropItem(ClientSession session , C_DropItem packet)
+        {
+            S_BroadCastDropItem pkt = new S_BroadCastDropItem();
+            pkt.itemId = packet.itemId;
+            pkt.posX = packet.posX;
+            pkt.posY = packet.posY;
+            pkt.posZ = packet.posZ;
+            Broadcast(pkt.Write());
+        }
 
         public void DestroyItem(ClientSession session, C_DestroyItem packet)
         {
-            //S_BoradCastDestroyItem destroy = new S_BoradCastDestroyItem();
-            //destroy.item = packet.item;
-            //Broadcast(destroy.Write());
+            S_BroadCastDestroyItem pkt = new S_BroadCastDestroyItem();
+            pkt.itemId = packet.itemId;
+            Broadcast(pkt.Write());
         }
     }
 }

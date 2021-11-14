@@ -105,20 +105,21 @@ class PacketHandler
 	}
 	public static void C_GameOverHandler(PacketSession session, IPacket packet)
 	{
-		C_GameOver enterPacket = packet as C_GameOver;
 		ClientSession clientSession = session as ClientSession;
 
-
+		GameRoom room = clientSession.Room;
+		room.Push(() => room.GameOver(clientSession));
 		
 
 	}
 	public static void C_DropItemHandler(PacketSession session, IPacket packet)
 	{
 
-		C_DropItem enterPacket = packet as C_DropItem;
+		C_DropItem dropItem = packet as C_DropItem;
 		ClientSession clientSession = session as ClientSession;
 
-
+		GameRoom room = clientSession.Room;
+		room.Push(() => room.DropItem(clientSession, dropItem));
 
 	}
 	public static void C_RoomListHandler(PacketSession session, IPacket packet)
@@ -131,6 +132,7 @@ class PacketHandler
 	public static void C_RoomRefreshHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
+
 		SessionManager.Instance.RoomList(clientSession);
 	}
 	public static void C_RoomEnterHandler(PacketSession session, IPacket packet)
@@ -156,20 +158,35 @@ class PacketHandler
 	{
 		ClientSession clientSession = session as ClientSession;
 		C_RankList rankPacket = packet as C_RankList;
+
 		SessionManager.Instance.RankingLIst(clientSession, rankPacket);
 	}
 
 	public static void C_ReadyHandler(PacketSession session, IPacket packet)
 	{
-		
+		C_Ready readyPacket = packet as C_Ready;
+		ClientSession clientSession = session as ClientSession;
+
+		GameRoom room = clientSession.Room;
+		room.Push(
+			() => room.Ready(clientSession, readyPacket)
+		);
 	}
 	public static void C_GameClearHandler(PacketSession session, IPacket packet)
 	{
+		C_GameClear gameClearPacket = packet as C_GameClear;
+		ClientSession clientSession = session as ClientSession;
 
+		SessionManager.Instance.GameClear(clientSession, gameClearPacket);
 	}
 	public static void C_GameRestartHandler(PacketSession session, IPacket packet)
 	{
+		ClientSession clientSession = session as ClientSession;
 
+		GameRoom room = clientSession.Room;
+		room.Push(
+			() => room.GameOver(clientSession)
+		);
 	}
 
 }
