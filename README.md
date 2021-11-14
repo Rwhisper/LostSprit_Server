@@ -3,8 +3,8 @@
 C# 소켓 통신 프로그램
 - 멀티플레이 게임을 위한 서버
 - 비동기 방식 사용하여 데이터 통신관리
-* 
-* ![image](https://user-images.githubusercontent.com/73861946/141670455-93808b18-55bc-49f3-a4a5-a40b0806044e.png)
+  * 
+  * ![image](https://user-images.githubusercontent.com/73861946/141670455-93808b18-55bc-49f3-a4a5-a40b0806044e.png)
 
 - 세션관리를 통해서 사용자의 정보를 관리한다.
 - 
