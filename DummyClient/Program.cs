@@ -23,20 +23,46 @@ namespace DummyClient
 
 			connector.Connect(endPoint, 
 				() => { return SessionManager.Instance.Generate(); },
-				10);
+				1);
 
+			SessionManager.Instance.Login("test", "1234");
 			while (true)
 			{
-				try
-				{
-					SessionManager.Instance.SendForEach();
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.ToString());
-				}
+				string n;
+				n = Console.ReadLine( );
+                switch (n)
+                {
+					case "roomList":
+						SessionManager.Instance.RoomListRequest();						
+						break;
+					case "Logout":
+						SessionManager.Instance.Logout();
+						break;
+					case "EnterRoom":
+						string i = Console.ReadLine();
+						SessionManager.Instance.EnterRoom(int.Parse(i));
+						break;
+					case "GameStart":
+						SessionManager.Instance.GameStart();
+						break;
+					case "CreateRoom":
+						string a = Console.ReadLine();
+						string b = Console.ReadLine();
+						SessionManager.Instance.CreateRoom(a, int.Parse(b));
+						break;
+                }
 
-				Thread.Sleep(250);
+				//try
+				//{
+				//	SessionManager.Instance.SendForEach();
+				//}
+				//catch (Exception e)
+				//{
+				//	Console.WriteLine(e.ToString());
+				//}
+
+				//Thread.Sleep(250);
+
 			}
 		}
 	}
