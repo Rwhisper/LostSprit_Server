@@ -158,13 +158,16 @@ namespace Server
 			{
 				int roomId = ++_roomId;
 				// 룸 아이디 저장
-				session.Room.RoomId = roomId;
+				session.RoomId = roomId;
 				GameRoom createRoom = new GameRoom();
 				// 새로 만든 룸 객체 초기화 하고 호스트 넣어줌
 				createRoom.Push(() => createRoom.CreateRoom(session, packet.maxUser, packet.title));
 				// 룸 리스트에 룸 추가
 				_gameRoom.Add(roomId, createRoom);
-
+				foreach(GameRoom rm in _gameRoom.Values)
+                {
+                    Console.WriteLine(rm.Host + rm.Stage + rm.NowPlayer + rm.MaxPlayer);
+                }
 				Console.WriteLine($"CreateRoom : {roomId}, Host : {session.PlayerId}");
 			}
 		}
@@ -192,10 +195,12 @@ namespace Server
 						gm.state = room.State;
 						cnt++;
 						_roomList.Add(gm);
+						Console.WriteLine("방 있음" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
 					}
 				}
 				if(cnt != 0)
                 {
+                    Console.WriteLine("방 있음");
 					S_RoomList pkt = new S_RoomList();
 					pkt.rooms = _roomList;
 					session.Send(pkt.Write());

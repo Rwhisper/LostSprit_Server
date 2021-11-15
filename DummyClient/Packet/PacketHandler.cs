@@ -98,6 +98,8 @@ class PacketHandler
 	public static void S_CreateRoomResultHandler(PacketSession session, IPacket packet)
 	{
 		ServerSession serverSession = session as ServerSession;
+		S_CreateRoomResult pkt = packet as S_CreateRoomResult;
+        Console.WriteLine($"room Create : {pkt.result}");
 	}
 	public static void S_EnterRoomOkHandler(PacketSession session, IPacket packet)
 	{
