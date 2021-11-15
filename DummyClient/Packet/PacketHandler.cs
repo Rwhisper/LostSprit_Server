@@ -31,7 +31,6 @@ class PacketHandler
 	{
 		S_PlayerList pkt = packet as S_PlayerList;
 		ServerSession serverSession = session as ServerSession;
-
 		
 	}
 	// 누군가가 이동하였을때
