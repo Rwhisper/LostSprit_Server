@@ -28,7 +28,7 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		SessionManager.Instance.LeaveGame(clientSession);
+		//SessionManager.Instance.LeaveGame(clientSession);
 		//GameRoom room = clientSession.Room;
 		//room.Push(
 		//	() => room.Leave(clientSession)
@@ -43,26 +43,28 @@ class PacketHandler
 			return;
 
 		Console.WriteLine($"위치 : {movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.Move(clientSession, movePacket)
-		);
+		SessionManager.Instance.Move(clientSession, movePacket);
+		//GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.Move(clientSession, movePacket)
+		//);
 	}
 	public static void C_RotHandler(PacketSession session, IPacket packet)
     {
 		C_Rot rotPacket = packet as C_Rot;
 		ClientSession clientSession = session as ClientSession;
+		SessionManager.Instance.Rot(clientSession, rotPacket);
 
-		if (clientSession.Room == null)
-			return;
+		//if (clientSession.Room == null)
+		//	return;
         //float x, y, z;
         //if (movePacket.posX == null)
         //	movePacket.posX == 
         Console.WriteLine($"각도 : {rotPacket.rotX}, {rotPacket.rotY}, {rotPacket.rotZ}, {rotPacket.rotW}");
-        GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.Rot(clientSession, rotPacket)
-		);
+  //      GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.Rot(clientSession, rotPacket)
+		//);
 	}
 	public static void C_EnterHandler(PacketSession session, IPacket packet)
 	{
@@ -82,11 +84,12 @@ class PacketHandler
 		C_DestroyItem destroyItem = packet as C_DestroyItem;
 		ClientSession clientSession = session as ClientSession;
 
-		// 아직
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.DestroyItem(clientSession, destroyItem)
-		);
+		SessionManager.Instance.DestroyItem(clientSession, destroyItem);
+		//// 아직
+		//GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.DestroyItem(clientSession, destroyItem)
+		//);
 	}
 	public static void C_CreateRoomHandler(PacketSession session, IPacket packet)
 	{
@@ -97,9 +100,9 @@ class PacketHandler
 	public static void C_GameStartHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
-
-		GameRoom room = clientSession.Room;
-		room.Push(() => room.GameStart(clientSession));
+		SessionManager.Instance.GameStart(clientSession);
+		//GameRoom room = clientSession.Room;
+		//room.Push(() => room.GameStart(clientSession));
 
 
 	}
@@ -107,8 +110,9 @@ class PacketHandler
 	{
 		ClientSession clientSession = session as ClientSession;
 
-		GameRoom room = clientSession.Room;
-		room.Push(() => room.GameOver(clientSession));
+		SessionManager.Instance.GameOver(clientSession);
+		//GameRoom room = clientSession.Room;
+		//room.Push(() => room.GameOver(clientSession));
 		
 
 	}
@@ -118,8 +122,9 @@ class PacketHandler
 		C_DropItem dropItem = packet as C_DropItem;
 		ClientSession clientSession = session as ClientSession;
 
-		GameRoom room = clientSession.Room;
-		room.Push(() => room.DropItem(clientSession, dropItem));
+		SessionManager.Instance.DropItem(clientSession, dropItem);
+		//GameRoom room = clientSession.Room;
+		//room.Push(() => room.DropItem(clientSession, dropItem));
 
 	}
 	public static void C_RoomListHandler(PacketSession session, IPacket packet)
@@ -148,11 +153,12 @@ class PacketHandler
 
 		if (clientSession.Room == null)
 			return;
+		SessionManager.Instance.LeaveRoom(clientSession);
 
-        GameRoom room = clientSession.Room;
-        room.Push(
-            () => room.Leave(clientSession)
-        );
+        //GameRoom room = clientSession.Room;
+        //room.Push(
+        //    () => room.Leave(clientSession)
+        //);
     }
 	public static void C_RankListHandler(PacketSession session, IPacket packet)
 	{
@@ -167,10 +173,12 @@ class PacketHandler
 		C_Ready readyPacket = packet as C_Ready;
 		ClientSession clientSession = session as ClientSession;
 
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.Ready(clientSession, readyPacket)
-		);
+		SessionManager.Instance.Ready(clientSession, readyPacket);
+
+		//GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.Ready(clientSession, readyPacket)
+		//);
 	}
 	public static void C_GameClearHandler(PacketSession session, IPacket packet)
 	{
@@ -183,10 +191,12 @@ class PacketHandler
 	{
 		ClientSession clientSession = session as ClientSession;
 
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.GameOver(clientSession)
-		);
+		SessionManager.Instance.GameOver(clientSession);
+
+		//GameRoom room = clientSession.Room;
+		//room.Push(
+		//	() => room.GameOver(clientSession)
+		//);
 	}
 
 }

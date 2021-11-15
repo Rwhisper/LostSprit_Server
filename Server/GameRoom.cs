@@ -10,7 +10,7 @@ namespace Server
         List<ClientSession> _sessions = new List<ClientSession>();
         JobQueue _jobQueue = new JobQueue();
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
-        public int Roomid { get; set; }
+        public int RoomId { get; set; }
         public string Title { get; set; }
         public string Host { get; set; }
         public int MaxPlayer { get; set; }
@@ -37,7 +37,7 @@ namespace Server
 
         public GameRoom()     
         {
-            Roomid = 0;
+            RoomId = 0;
             Host = null;
             MaxPlayer = 0;
             NowPlayer = 0;
@@ -45,6 +45,8 @@ namespace Server
             Stage = "1";
             isFireReady = false;
             isWaterReady = false;
+            StartGameTime = null;
+            EndGameTime = null;
         }
 
         // 지속적으로 패킷 모아서 보내기
@@ -58,15 +60,18 @@ namespace Server
             _pendingList.Clear();
         }
 
-        public void CreateRoom(ClientSession session, int max)
+        public void CreateRoom(ClientSession session, int max, string title)
         {
             session.Room = this;
             Host = session.PlayerId;
+            Title = title;
             MaxPlayer = max;
             NowPlayer++;
             _sessions.Add(session);
             S_CreateRoomResult pkt = new S_CreateRoomResult();
-            Push(() => session.Send(pkt.Write()));
+            // 생성 성공
+            pkt.result = 1;
+            session.Send(pkt.Write());
         }
 
      
@@ -85,6 +90,7 @@ namespace Server
         {
             // 새로들어온 유저에게 룸 객체 지엉
             session.Room = this;
+            session.RoomId = this.RoomId;
             ++NowPlayer;            
             S_EnterRoomOk pkt = new S_EnterRoomOk();
             pkt.stage = this.Stage;
@@ -148,8 +154,7 @@ namespace Server
             enter.attr = packet.attr;
             enter.posX = packet.posX;
             enter.posY = packet.posY;
-            enter.posZ = packet.posZ;
-            
+            enter.posZ = packet.posZ;            
             Broadcast(enter.Write());
         }
         /// <summary>
@@ -169,6 +174,7 @@ namespace Server
         public void Leave(ClientSession session)
         {
             session.Room = null;
+            session.RoomId = 0;
             // 플레이어를 제거하고
             _sessions.Remove(session);
             --NowPlayer;
@@ -209,9 +215,9 @@ namespace Server
             Push(() => session.Send(pkt.Write()));
 
         }
-        public void ReadyCancle(ClientSession session )
+        public void ReadyCancel(ClientSession session, C_Ready packet)
         {
-
+            
         }
 
         public void Move(ClientSession session, C_Move packet)
@@ -246,7 +252,10 @@ namespace Server
             Broadcast(rot.Write());
 
         }
-
+        /// <summary>
+        /// 게임 시작
+        /// </summary>
+        /// <param name="session"></param>
         public void GameStart(ClientSession session)
         {
             if(session.PlayerId == this.Host)
@@ -254,16 +263,23 @@ namespace Server
                 if(isFireReady && isWaterReady)
                 {
                     S_GameStart pkt = new S_GameStart();
-                    Push(() => Broadcast(pkt.Write()));
+                    StartGameTime = DateTime.Now.ToString();
+                     Broadcast(pkt.Write());
+                    Console.WriteLine($"{Host}의 방 게임 시작");
                 }
                 else
                 {
                     S_GameStartFaild pkt = new S_GameStartFaild();
                     pkt.result = 1;
-                    Push(() => session.Send(pkt.Write()));
+                    session.Send(pkt.Write());
+                    Console.WriteLine($"레디가 되지않아 게임 시작 불가");
                 }
             }
         }
+        /// <summary>
+        ///  플레이어가 죽거나 다시시작을 눌렀을 때
+        /// </summary>
+        /// <param name="session"></param>
         public void GameOver(ClientSession session)
         {
             C_GameOver gameOverPacket = new C_GameOver();

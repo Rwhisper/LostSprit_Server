@@ -16,6 +16,7 @@ namespace Server
 		public string Attr { get; set; }
 		public int ReadyStatus { get; set; }
 		public GameRoom Room { get; set; }
+		public int RoomId { get; set; }
 		// 위치
 		public float PosX { get; set; }
 		public float PosY { get; set; }
@@ -33,7 +34,7 @@ namespace Server
 			Console.WriteLine($"OnConnected : {endPoint}");
 
             // 룸 안에 밀어 넣는다.
-            Program.Room.Push(() => Program.Room.Enter(this));
+            //Program.Room.Push(() => Program.Room.Enter(this));
         }
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

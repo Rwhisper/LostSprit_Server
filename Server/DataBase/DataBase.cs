@@ -19,7 +19,7 @@ namespace Server
         private void setting()
         {
             string connectionString;
-            connectionString = $"SERVER=localhost;PORT=3306;DATABASE=lost_spirit;UID=root;PASSWORD=andlseh12;";
+            connectionString = $"SERVER=localhost;PORT=3306;DATABASE=lost_sprit;UID=root;PASSWORD=andlseh12;";
             connection = new MySqlConnection(connectionString);
         }
 

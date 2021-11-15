@@ -94,7 +94,6 @@
   </packet>
   <packet name="S_BroadCastEnterRoom">
     <string name="playerId"/>
-    <int name = "readyStatus"/>
   </packet>
 	<pacekt name ="S_StageChange">
 		<string name ="stageCode"/>
@@ -104,7 +103,13 @@
   <packet name ="S_Ready">
     <list name ="playerReady">
       <string name ="playerId"/>
-      <string name ="status"/>
+      <int name ="Readystatus"/>
+    </list>
+  </packet>
+  <packet name ="S_ReadyCancel">
+    <list name ="playerReady">
+      <string name ="playerId"/>
+      <int name ="Readystatus"/>
     </list>
   </packet>
   <packet name ="S_GameStart">
@@ -186,6 +191,9 @@
   <packet name ="C_LeaveRoom">
   </packet>
   <packet name ="C_Ready">
+    <int name ="result"/>
+  </packet>
+  <packet name ="C_ReadyCancle">
     <int name ="result"/>
   </packet>
   <packet name ="C_GameClear">
