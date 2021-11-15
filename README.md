@@ -28,14 +28,16 @@ C# 소켓 통신 프로그램
   + 데이터 손실이 일어날만한 곳은 lock을 사용하여 처리한다.
 - GameRoom : 방 하나를 의미한다. 
  * 방 안에는 최대 4인 까지 접속 가능하며, 순차적으로 파일을 전송하는 JobQueue를 사용(내부의 입출력은 lock을 사용하여 구현하였다.)
-- xml 파일에 패킷 구조를 정의하고 xml파일을 읽어들여 미리 정의 한 string Format형식으로 패킷을 정의하고 읽고 쓸수있는 클래스 생성
+ * 객체가 방안에 들어가면 객체에게 룸 객체 지정해준다 ( 수정 : 객체는 룸 아이디만 가지고있고 딕셔너리에 접근해서 사용하도록 )
+
+ 
+- PacketManager : 패킷을 관리하는 클래스
+- - xml 파일에 패킷 구조를 정의하고 xml파일을 읽어들여 미리 정의 한 string Format형식으로 패킷을 정의하고 읽고 쓸수있는 클래스 생성
  * ![image](https://user-images.githubusercontent.com/73861946/141686101-137e1e49-47fe-4e8e-92a6-da084a2a6595.png)
  * ![image](https://user-images.githubusercontent.com/73861946/141686136-8fead71b-bdc4-4daf-a44e-276b7c9c8100.png)
  * 완성된 패킷 클래스
  * ![image](https://user-images.githubusercontent.com/73861946/141686504-c75de10a-c30b-4a75-9ff9-03209b644e83.png)
  * (전체 구조는 너무 많기 때문에 생략하였습니다 - PacketGenerator: Program.cs, Server : GenPacket.cs)
- 
-- PacketManager : 패킷을 관리하는 클래스
  * 전체 패킷 핸들러 함수 저장과 그것을 실행하는 Action을 Dictionary에 저장
  * ![image](https://user-images.githubusercontent.com/73861946/141686327-b3286c0b-79e2-4747-b6af-4a76191b62e8.png)
  * 핸들러 추가
