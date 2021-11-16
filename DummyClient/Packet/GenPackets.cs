@@ -801,7 +801,10 @@ public class S_RankList : IPacket
 
 public class S_CreateRoomResult : IPacket
 {
-	public int result;
+	public string title;
+	public string stage;
+	public int maxPlayer;
+	public int nowPlayer;
 
 	public ushort Protocol { get { return (ushort)PacketID.S_CreateRoomResult; } }
 
@@ -810,7 +813,17 @@ public class S_CreateRoomResult : IPacket
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
-		this.result = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		ushort titleLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.title = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, titleLen);
+		count += titleLen;
+		ushort stageLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.stage = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, stageLen);
+		count += stageLen;
+		this.maxPlayer = BitConverter.ToInt32(segment.Array, segment.Offset + count);
+		count += sizeof(int);
+		this.nowPlayer = BitConverter.ToInt32(segment.Array, segment.Offset + count);
 		count += sizeof(int);
 	}
 
@@ -822,7 +835,17 @@ public class S_CreateRoomResult : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_CreateRoomResult), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes(this.result), 0, segment.Array, segment.Offset + count, sizeof(int));
+		ushort titleLen = (ushort)Encoding.Unicode.GetBytes(this.title, 0, this.title.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(titleLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += titleLen;
+		ushort stageLen = (ushort)Encoding.Unicode.GetBytes(this.stage, 0, this.stage.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(stageLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += stageLen;
+		Array.Copy(BitConverter.GetBytes(this.maxPlayer), 0, segment.Array, segment.Offset + count, sizeof(int));
+		count += sizeof(int);
+		Array.Copy(BitConverter.GetBytes(this.nowPlayer), 0, segment.Array, segment.Offset + count, sizeof(int));
 		count += sizeof(int);
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
@@ -833,6 +856,7 @@ public class S_CreateRoomResult : IPacket
 
 public class S_EnterRoomOk : IPacket
 {
+	public string title;
 	public string stage;
 	public int maxPlayer;
 	public int nowPlayer;
@@ -872,6 +896,10 @@ public class S_EnterRoomOk : IPacket
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
+		ushort titleLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.title = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, titleLen);
+		count += titleLen;
 		ushort stageLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
 		count += sizeof(ushort);
 		this.stage = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, stageLen);
@@ -899,6 +927,10 @@ public class S_EnterRoomOk : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_EnterRoomOk), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
+		ushort titleLen = (ushort)Encoding.Unicode.GetBytes(this.title, 0, this.title.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(titleLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += titleLen;
 		ushort stageLen = (ushort)Encoding.Unicode.GetBytes(this.stage, 0, this.stage.Length, segment.Array, segment.Offset + count + sizeof(ushort));
 		Array.Copy(BitConverter.GetBytes(stageLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);

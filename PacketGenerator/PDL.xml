@@ -79,10 +79,13 @@
     </list>
   </packet>
   <packet name ="S_CreateRoomResult">
-    <int name ="result"/>
+	  <string name ="title"/>
+	  <string name ="stage"/>
+	  <int name ="maxPlayer"/>
+	  <int name ="nowPlayer"/>
   </packet>
 	<packet name ="S_EnterRoomOk">
-   <string name ="title"/>
+     <string name ="title"/>
 	 <string name ="stage"/>
 	 <int name ="maxPlayer"/>
 	 <int name ="nowPlayer"/>		
@@ -115,11 +118,7 @@
     </list>
   </packet>
   <packet name ="S_GameStart">
-    <string name ="stageCode"/>
-    <list name ="playerReady">
-      <string name ="playerId"/>
-      <string name ="status"/>
-    </list>
+    <string name ="stageCode"/>   
   </packet>
   <packet name="S_GameClear">
     <string name ="clearTime"/>
@@ -147,6 +146,7 @@
 	<packet name ="C_LeaveGame">
 	</packet>
   <packet name ="C_GameStart">
+	  <string name ="stageCode"/>
   </packet>
 	<packet name ="C_Move">
 		<float name ="posX"/>

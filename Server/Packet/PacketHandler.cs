@@ -99,8 +99,9 @@ class PacketHandler
 	}
 	public static void C_GameStartHandler(PacketSession session, IPacket packet)
 	{
+		C_GameStart pkt = packet as C_GameStart;
 		ClientSession clientSession = session as ClientSession;
-		SessionManager.Instance.GameStart(clientSession);
+		SessionManager.Instance.GameStart(clientSession, pkt);
 		//GameRoom room = clientSession.Room;
 		//room.Push(() => room.GameStart(clientSession));
 

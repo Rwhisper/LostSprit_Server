@@ -22,7 +22,7 @@ namespace Server
 		/// 서버에 접속한 유저 정보
 		/// </summary>
 		Dictionary<int, ClientSession> _sessions = new Dictionary<int, ClientSession>();
-		int _roomId = 1;
+		int _roomId = 0;
 		/// <summary>
 		/// 로그인한 유저들의 정보
 		/// </summary>
@@ -183,7 +183,7 @@ namespace Server
 		{
 			lock (_lock)
 			{
-				int roomId = ++_roomId;
+				int roomId = _roomId++;
 				// 룸 아이디 저장
 				session.RoomId = roomId;
 				GameRoom createRoom = new GameRoom();
@@ -194,7 +194,14 @@ namespace Server
 				if(_gameRoom.TryGetValue(roomId, out GameRoom r)) 
                 {
                     Console.WriteLine("CreateRoom : " + r.Host + r.Stage + r.NowPlayer + r.MaxPlayer + r.Title);
-                }
+					//S_CreateRoomResult pkt = new S_CreateRoomResult();
+					//pkt.title = r.Title;
+					//pkt.stage = r.Stage;
+					//pkt.maxPlayer = r.MaxPlayer;
+					//pkt.nowPlayer = r.NowPlayer;
+					//session.Send(pkt.Write());
+				}
+				
 				//Console.WriteLine($"CreateRoom : {roomId}, Host : {session.PlayerId} , Title{}");
 			}
 		}
@@ -306,11 +313,11 @@ namespace Server
 		/// 게임 시작
 		/// </summary>
 		/// <param name="session"></param>
-		public void GameStart(ClientSession session)
+		public void GameStart(ClientSession session, C_GameStart pkt)
 		{
 			if(_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
             {
-				room.Push(() => room.GameStart(session));
+				room.Push(() => room.GameStart(session, pkt));
             }
 			
 		}

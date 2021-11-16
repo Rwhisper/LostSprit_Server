@@ -13,13 +13,13 @@ namespace Server
 	{
 		static Listener _listener = new Listener();
         // 방이 하나일때는 이렇게 사용해도됨
-        public static GameRoom Room = new GameRoom();
+        //public static GameRoom Room = new GameRoom();
 
-        static void FlushRoom()
-        {
-            Room.Push(() => Room.Flush());
-            JobTimer.Instance.Push(FlushRoom, 25);
-        }
+        //static void FlushRoom()
+        //{
+        //    Room.Push(() => Room.Flush());
+        //    JobTimer.Instance.Push(FlushRoom, 25);
+        //}
 
         static void Main(string[] args) 
 		{
@@ -33,12 +33,12 @@ namespace Server
 			Console.WriteLine("Listening...");
 
             //계속해서 뿌려줌FlushRoom();
-            JobTimer.Instance.Push(FlushRoom);
+            //JobTimer.Instance.Push(FlushRoom);
             
 
             while (true)
 			{
-                JobTimer.Instance.Flush();
+                //JobTimer.Instance.Flush();
             }
 		}
 	}

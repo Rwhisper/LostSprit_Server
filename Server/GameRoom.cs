@@ -50,19 +50,21 @@ namespace Server
         }
 
         // 지속적으로 패킷 모아서 보내기
-        public void Flush()
-        {
-            // N ^ 2
-            foreach (ClientSession s in _sessions)
-                s.Send(_pendingList);
+        //public void Flush()
+        //{
+        //    // N ^ 2
+        //    foreach (ClientSession s in _sessions)
+        //        s.Send(_pendingList);
 
-            //Console.WriteLine($"Flushed {_pendingList.Count} items");
-            _pendingList.Clear();
-        }
+        //    //Console.WriteLine($"Flushed {_pendingList.Count} items");
+        //    _pendingList.Clear();
+        //}
 
         public void CreateRoom(ClientSession session, int max, string title)
         {
             session.Room = this;
+            session.ReadyStatus = 0;
+            isFireReady = true;
             Host = session.PlayerId;
             Title = title;
             MaxPlayer = max;
@@ -72,7 +74,10 @@ namespace Server
             _sessions.Add(session);
             S_CreateRoomResult pkt = new S_CreateRoomResult();
             // 생성 성공
-            pkt.result = 1;
+            pkt.title = this.Title;
+            pkt.stage = this.Stage;
+            pkt.maxPlayer = this.MaxPlayer;
+            pkt.nowPlayer = this.NowPlayer;
             session.Send(pkt.Write());
         }
 
@@ -80,7 +85,6 @@ namespace Server
 
         public void Broadcast(ArraySegment<byte> segment)
         {
-            
             foreach (ClientSession s in _sessions)
                 s.Send(segment);
         }
@@ -93,11 +97,17 @@ namespace Server
             // 새로들어온 유저에게 룸 객체 지엉
             session.Room = this;
             session.RoomId = this.RoomId;
-            ++NowPlayer;            
+            session.ReadyStatus = -1;
+            ++NowPlayer;
+            isWaterReady = true;
+
+            // 방에 입장해 유저에게 방의 현재상태를 알려줄 패킷 생성
             S_EnterRoomOk pkt = new S_EnterRoomOk();
+            pkt.title = this.Title;
             pkt.stage = this.Stage;
             pkt.maxPlayer = this.MaxPlayer;
             pkt.nowPlayer = this.NowPlayer;
+
             S_EnterRoomOk.PlayerReady pr = new S_EnterRoomOk.PlayerReady();            
             foreach (ClientSession s in _sessions)
             {
@@ -106,17 +116,17 @@ namespace Server
                 pkt.playerReadys.Add(pr);
             }
             session.Send(pkt.Write());
+            
             // 새로 들어간방의 유저들에게 들어갔음을 알려준다.
             S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
             bEnterRoom.playerId = session.PlayerId;
             _sessions.Add(session);
             Push(() => Broadcast(bEnterRoom.Write()));
-           
-            
-           
+            Console.WriteLine("전체에게 뿌려줌");
 
         }
 
+        // 사용 안함
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
             ClientSession Mysession;
@@ -204,12 +214,12 @@ namespace Server
                     pkt.result = packet.result;
                 }
             }
-            else if(packet.result ==1)
+            else if (packet.result == 1)
             {
                 if (!this.isWaterReady)
                 {
                     isWaterReady = true;
-                    session.ReadyStatus = 0;
+                    session.ReadyStatus = 1;
                     pkt.playerID = session.PlayerId;
                     pkt.result = packet.result;
                 }
@@ -219,6 +229,18 @@ namespace Server
         }
         public void ReadyCancel(ClientSession session, C_ReadyCancle packet)
         {
+            //S_ReadyCancel pkt = new S_ReadyCancel();
+            //if (packet.result == 0)
+            //{
+            //    isFireReady = true;
+            //    session.ReadyStatus = 0;
+            //    pkt.playerID = session.PlayerId;
+            //    pkt.result = packet.result;
+            //}
+            //else if (packet.result == 1)
+            //{
+
+            //}
             
         }
 
@@ -261,25 +283,35 @@ namespace Server
         /// 게임 시작
         /// </summary>
         /// <param name="session"></param>
-        public void GameStart(ClientSession session)
+        public void GameStart(ClientSession session, C_GameStart packet)
         {
             if(session.PlayerId == this.Host)
             {
                 if(isFireReady && isWaterReady)
                 {
                     S_GameStart pkt = new S_GameStart();
+                    pkt.stageCode = packet.stageCode;
                     StartGameTime = DateTime.Now.ToString();
                      Broadcast(pkt.Write());
                     Console.WriteLine($"{Host}의 방 게임 시작");
                 }
                 else
                 {
-                    S_GameStartFaild pkt = new S_GameStartFaild();
-                    pkt.result = 1;
-                    session.Send(pkt.Write());
-                    Console.WriteLine($"레디가 되지않아 게임 시작 불가");
+                    S_GameStart pkt = new S_GameStart();
+                    pkt.stageCode = packet.stageCode;
+                    StartGameTime = DateTime.Now.ToString();
+                    Broadcast(pkt.Write());
+                    Console.WriteLine($"레디가 되지않았지만 게임 시작");
                 }
             }
+            else
+            {
+                S_GameStartFaild pkt = new S_GameStartFaild();
+                pkt.result = 1;
+                session.Send(pkt.Write());
+                Console.WriteLine($"호스트가 아님당 ");
+            }
+
         }
         /// <summary>
         ///  플레이어가 죽거나 다시시작을 눌렀을 때

@@ -89,7 +89,7 @@ class PacketHandler
 		S_RoomList pkt = packet as S_RoomList;
 		foreach(S_RoomList.Room room in pkt.rooms)
         {
-            Console.WriteLine(room.title + room.host + room.maxPlayer + room.nowPlayer + room. stage + room.state);
+            Console.WriteLine("방이름 : " + room.title + "방장" +room.host + "최대 인원수 : " + room.maxPlayer + "최소 인원수 : " + room.nowPlayer +"스테이지 : " + room. stage + "현재 게임중인지 아닌지 : " + room.state);
         }
 	}
 	public static void S_RankListHandler(PacketSession session, IPacket packet){
@@ -100,7 +100,7 @@ class PacketHandler
 	{
 		ServerSession serverSession = session as ServerSession;
 		S_CreateRoomResult pkt = packet as S_CreateRoomResult;
-        Console.WriteLine($"room Create : {pkt.result}");
+        Console.WriteLine($"room Create : {pkt.title}");
 	}
 	public static void S_EnterRoomOkHandler(PacketSession session, IPacket packet)
 	{
