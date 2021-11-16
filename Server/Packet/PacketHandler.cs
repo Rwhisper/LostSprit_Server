@@ -130,7 +130,7 @@ class PacketHandler
 	public static void C_RoomListHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
-
+        Console.WriteLine($"룸 리스트 요청 옴 : {clientSession.PlayerId}");
 		SessionManager.Instance.RoomList(clientSession);
 
 	}
@@ -167,7 +167,15 @@ class PacketHandler
 
 		SessionManager.Instance.RankingLIst(clientSession, rankPacket);
 	}
+	public static void C_ReadyCancleHandler(PacketSession session, IPacket packet)
+	{
+		C_ReadyCancle readyCanclePacket = packet as C_ReadyCancle;
+		ClientSession clientSession = session as ClientSession;
 
+		SessionManager.Instance.ReadyCancel(clientSession, readyCanclePacket);
+
+		
+	}
 	public static void C_ReadyHandler(PacketSession session, IPacket packet)
 	{
 		C_Ready readyPacket = packet as C_Ready;

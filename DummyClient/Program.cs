@@ -25,13 +25,18 @@ namespace DummyClient
 				() => { return SessionManager.Instance.Generate(); },
 				1);
 
-			SessionManager.Instance.Login("test", "1234");
+			
 			while (true)
 			{
 				string n;
 				n = Console.ReadLine( );
                 switch (n)
                 {
+					case "Login" :
+						string id = Console.ReadLine();
+						string pwd = Console.ReadLine();
+						SessionManager.Instance.Login(id, pwd);
+						break;
 					case "roomList":
 						SessionManager.Instance.RoomListRequest();						
 						break;
@@ -49,6 +54,9 @@ namespace DummyClient
 						string a = Console.ReadLine();
 						string b = Console.ReadLine();
 						SessionManager.Instance.CreateRoom(a, int.Parse(b));
+						break;
+					case "Move":
+						SessionManager.Instance.Move();
 						break;
                 }
 

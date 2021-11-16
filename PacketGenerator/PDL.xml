@@ -62,6 +62,7 @@
   </packet>
   <packet name ="S_RoomList">
     <list name="Room">
+      <int name ="roomId"/>
       <string name="host"/>
       <bool name ="state"/>
       <int name="maxPlayer"/>
@@ -81,6 +82,7 @@
     <int name ="result"/>
   </packet>
 	<packet name ="S_EnterRoomOk">
+   <string name ="title"/>
 	 <string name ="stage"/>
 	 <int name ="maxPlayer"/>
 	 <int name ="nowPlayer"/>		

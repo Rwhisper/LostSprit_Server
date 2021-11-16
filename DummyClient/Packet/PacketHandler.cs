@@ -38,9 +38,11 @@ class PacketHandler
 	{
 		S_BroadCastMove pkt = packet as S_BroadCastMove;
 		ServerSession serverSession = session as ServerSession;
+
+		Console.WriteLine(pkt.playerId + pkt.posX + pkt.posY+ pkt.posZ);
 	}
 
-	public static void S_BoradCastDestroyItemHandler(PacketSession session, IPacket packet)
+	public static void S_ReadyCancelHandler(PacketSession session, IPacket packet)
 	{
         ServerSession serverSession = session as ServerSession;
 
@@ -87,7 +89,7 @@ class PacketHandler
 		S_RoomList pkt = packet as S_RoomList;
 		foreach(S_RoomList.Room room in pkt.rooms)
         {
-            Console.WriteLine(room.host + room.maxPlayer + room.nowPlayer + room. stage + room.state);
+            Console.WriteLine(room.title + room.host + room.maxPlayer + room.nowPlayer + room. stage + room.state);
         }
 	}
 	public static void S_RankListHandler(PacketSession session, IPacket packet){
@@ -113,6 +115,7 @@ class PacketHandler
 	public static void S_BroadCastEnterRoomHandler(PacketSession session, IPacket packet)
 	{
 		ServerSession serverSession = session as ServerSession;
+		
 	}
 	public static void S_NewRankingHandler(PacketSession session, IPacket packet)
 	{

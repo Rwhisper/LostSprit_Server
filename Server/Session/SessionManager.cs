@@ -75,7 +75,7 @@ namespace Server
 			}
 		}
 
-
+		
 		/// <summary>
 		/// 세션풀에서 세션 삭제
 		/// </summary>
@@ -147,6 +147,33 @@ namespace Server
 			
         }
 
+		public void LeaveGame(ClientSession session)
+        {
+            lock (_lock)
+            {
+				if(session.RoomId != 0)
+                {
+					if(_gameRoom.TryGetValue(session.RoomId, out GameRoom gr))
+                    {
+						if (session.RoomHost == session.PlayerId)
+						{
+							gr.Push(() => gr.LeaveHost(session));
+							
+						}
+                        else
+                        {
+							gr.Push(() => gr.Leave(session));
+                        }
+					}
+					_gameRoom.Remove(session.RoomId);
+				}
+				if (session.PlayerId != null)
+				{
+					_loginSession.Remove(session.PlayerId);
+				}				
+				_sessions.Remove(session.SessionId);
+            }
+        }
 		/// <summary>
 		/// 룸생성 요청을 처리
 		/// </summary>
@@ -164,11 +191,11 @@ namespace Server
 				createRoom.Push(() => createRoom.CreateRoom(session, packet.maxUser, packet.title));
 				// 룸 리스트에 룸 추가
 				_gameRoom.Add(roomId, createRoom);
-				foreach(GameRoom rm in _gameRoom.Values)
+				if(_gameRoom.TryGetValue(roomId, out GameRoom r)) 
                 {
-                    Console.WriteLine(rm.Host + rm.Stage + rm.NowPlayer + rm.MaxPlayer);
+                    Console.WriteLine("CreateRoom : " + r.Host + r.Stage + r.NowPlayer + r.MaxPlayer + r.Title);
                 }
-				Console.WriteLine($"CreateRoom : {roomId}, Host : {session.PlayerId}");
+				//Console.WriteLine($"CreateRoom : {roomId}, Host : {session.PlayerId} , Title{}");
 			}
 		}
 
@@ -182,25 +209,33 @@ namespace Server
             {
 				int cnt = 0;
 				List<S_RoomList.Room> _roomList = new List<S_RoomList.Room>();
-				S_RoomList.Room gm = new S_RoomList.Room();				
+						
 				foreach (GameRoom room in _gameRoom.Values)
 				{
+					S_RoomList.Room gm = new S_RoomList.Room();
+					gm.host = room.Host;
+					gm.nowPlayer = room.NowPlayer;
+					gm.maxPlayer = room.MaxPlayer;
+					gm.title = room.Title;
+					gm.stage = room.Stage;
+					gm.state = room.State;		
+					
 					if (room.State)
 					{
-						gm.host = room.Host;
-						gm.nowPlayer = room.NowPlayer;
-						gm.maxPlayer = room.MaxPlayer;
-						gm.title = room.Title;
-						gm.stage = room.Stage;
-						gm.state = room.State;
-						cnt++;
-						_roomList.Add(gm);
+						_roomList.Add(gm);						
 						Console.WriteLine("방 있음" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
+                        Console.WriteLine(_roomList.Count);
+						cnt++;
 					}
-				}
-				if(cnt != 0)
+                    else
+                    {
+						Console.WriteLine("닫힌 방" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
+					}					
+				}				
+				if (cnt != 0)
                 {
-                    Console.WriteLine("방 있음");
+                    Console.WriteLine("방 전송");
+                   
 					S_RoomList pkt = new S_RoomList();
 					pkt.rooms = _roomList;
 					session.Send(pkt.Write());
@@ -243,7 +278,7 @@ namespace Server
 				{
 					S_RoomConnFaild pkt = new S_RoomConnFaild();
 					pkt.result = 3;
-					session.Room.RoomId = packet.roomId;
+					//session.RoomId = packet.roomId;
 					session.Send(pkt.Write());
 				}
 			}
@@ -405,7 +440,9 @@ namespace Server
 			if(_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
 			{
 				room.Push(() => room.Move(session, packet));
+                
             }
+            
         }
 		public void Rot(ClientSession session, C_Rot packet)
 		{
@@ -435,7 +472,7 @@ namespace Server
 				room.Push(() => room.Ready(session, packet));
 			}
 		}
-		public void ReadyCancel(ClientSession session, C_Ready packet)
+		public void ReadyCancel(ClientSession session, C_ReadyCancle packet)
 		{
 			if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
 			{

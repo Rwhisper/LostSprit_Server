@@ -67,6 +67,8 @@ namespace Server
             Title = title;
             MaxPlayer = max;
             NowPlayer++;
+            Stage = "1";
+            State = true;
             _sessions.Add(session);
             S_CreateRoomResult pkt = new S_CreateRoomResult();
             // 생성 성공
@@ -215,7 +217,7 @@ namespace Server
             Push(() => session.Send(pkt.Write()));
 
         }
-        public void ReadyCancel(ClientSession session, C_Ready packet)
+        public void ReadyCancel(ClientSession session, C_ReadyCancle packet)
         {
             
         }
@@ -226,6 +228,7 @@ namespace Server
             session.PosX = packet.posX;
             session.PosY = packet.posY;
             session.PosZ = packet.posZ;
+            Console.WriteLine("in");
 
 
             // 모두에게 알린다.
@@ -234,6 +237,8 @@ namespace Server
             move.posX = session.PosX;
             move.posY = session.PosY;
             move.posZ = session.PosZ;
+
+            Console.WriteLine(move.playerId + move.posX + move.posY + move.posZ);
             Broadcast(move.Write());
         }
         public void Rot(ClientSession session, C_Rot packet)
