@@ -147,6 +147,56 @@ namespace Server
 			
         }
 
+		/// <summary>
+		/// 룸 리스트 요청 패킷이 넘어 올때 실행
+		/// </summary>
+		public void RoomList(ClientSession session)
+		{
+			lock (_lock)
+			{
+				int cnt = 0;
+				List<S_RoomList.Room> _roomList = new List<S_RoomList.Room>();
+
+				foreach (GameRoom room in _gameRoom.Values)
+				{
+					S_RoomList.Room gm = new S_RoomList.Room();
+					gm.host = room.Host;
+					gm.nowPlayer = room.NowPlayer;
+					gm.maxPlayer = room.MaxPlayer;
+					gm.title = room.Title;
+					gm.stage = room.Stage;
+					gm.state = room.State;
+
+					if (room.State)
+					{
+						_roomList.Add(gm);
+						Console.WriteLine("방 있음" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
+						Console.WriteLine(_roomList.Count);
+						cnt++;
+					}
+					else
+					{
+						Console.WriteLine("닫힌 방" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
+					}
+				}
+				if (cnt != 0)
+				{
+					Console.WriteLine("방 전송");
+
+					S_RoomList pkt = new S_RoomList();
+					pkt.rooms = _roomList;
+					session.Send(pkt.Write());
+				}
+				else    // 들어갈수있는 방이 없을때 출력
+				{
+					S_RoomConnFaild pkt = new S_RoomConnFaild();
+					pkt.result = 1;
+					session.Send(pkt.Write());
+				}
+
+			}
+		}
+
 		public void LeaveGame(ClientSession session)
         {
             lock (_lock)
@@ -206,6 +256,7 @@ namespace Server
 			}
 		}
 
+		// 
 		public void RoomInfo(ClientSession session)
         {
             lock (_lock)
@@ -217,56 +268,16 @@ namespace Server
 			}
         }
 
-		/// <summary>
-		/// 룸 리스트 요청 패킷이 넘어 올때 실행
-		/// </summary>
-		public void RoomList(ClientSession session)
-        {			
-			lock (_lock)
+		public void StartEnterRoom(ClientSession session, C_Enter packet)
+        {
+            lock (_lock)
             {
-				int cnt = 0;
-				List<S_RoomList.Room> _roomList = new List<S_RoomList.Room>();
-						
-				foreach (GameRoom room in _gameRoom.Values)
-				{
-					S_RoomList.Room gm = new S_RoomList.Room();
-					gm.host = room.Host;
-					gm.nowPlayer = room.NowPlayer;
-					gm.maxPlayer = room.MaxPlayer;
-					gm.title = room.Title;
-					gm.stage = room.Stage;
-					gm.state = room.State;		
-					
-					if (room.State)
-					{
-						_roomList.Add(gm);						
-						Console.WriteLine("방 있음" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
-                        Console.WriteLine(_roomList.Count);
-						cnt++;
-					}
-                    else
-                    {
-						Console.WriteLine("닫힌 방" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);
-					}					
-				}				
-				if (cnt != 0)
+				if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
                 {
-                    Console.WriteLine("방 전송");
-                   
-					S_RoomList pkt = new S_RoomList();
-					pkt.rooms = _roomList;
-					session.Send(pkt.Write());
-				}
-                else	// 들어갈수있는 방이 없을때 출력
-                {
-					S_RoomConnFaild pkt = new S_RoomConnFaild();
-					pkt.result = 1;
-					session.Send(pkt.Write());
+					room.Push(() => room.EnterRoom(session, packet));
                 }
-               
-			}			
+			}
         }
-
 		/// <summary>
 		/// 새로이 룸에 들어가기 
 		/// </summary>

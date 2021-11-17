@@ -6,10 +6,12 @@ using System.Text;
 
 class PacketHandler
 {
+	// 캐릭터 선택할때 보냄
 	public static void S_EnterGameHandler(PacketSession session, IPacket packet)
 	{
 		S_BroadcastEnterGame pkt = packet as S_BroadcastEnterGame;
 		ServerSession serverSession = session as ServerSession;
+        Console.WriteLine("EnterGame" + pkt.attr, pkt.playerId, pkt.posX, pkt.posY, pkt.posZ);
 
 	}
 	// 내가 입장한 상태에서 다른사람이 들어왔을때 추가
@@ -17,6 +19,7 @@ class PacketHandler
 	{
 		S_BroadcastEnterGame pkt = packet as S_BroadcastEnterGame; 
 		ServerSession serverSession = session as ServerSession;
+        Console.WriteLine(	"BroadEnter : "+pkt.playerId, pkt.attr);
 
 	}
 	// 누군가가 나갔을때
@@ -30,7 +33,7 @@ class PacketHandler
 	public static void S_PlayerListHandler(PacketSession session, IPacket packet)
 	{
 		S_PlayerList pkt = packet as S_PlayerList;
-		ServerSession serverSession = session as ServerSession;
+
 		
 	}
 	// 누군가가 이동하였을때

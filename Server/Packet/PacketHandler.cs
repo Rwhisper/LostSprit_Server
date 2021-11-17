@@ -66,17 +66,16 @@ class PacketHandler
 		//	() => room.Rot(clientSession, rotPacket)
 		//);
 	}
+	// 캐릭터 선택했을 때 나옴
 	public static void C_EnterHandler(PacketSession session, IPacket packet)
 	{
 		
 		C_Enter enterPacket = packet as C_Enter;
 		ClientSession clientSession = session as ClientSession;
 
+		SessionManager.Instance.StartEnterRoom(clientSession, enterPacket);
 				
-		GameRoom room = clientSession.Room;
-		room.Push(
-			() => room.EnterRoom(clientSession, enterPacket)
-		);
+	
 	}
 	public static void C_DestroyItemHandler(PacketSession session, IPacket packet)
 	{
@@ -141,6 +140,7 @@ class PacketHandler
 
 		SessionManager.Instance.RoomList(clientSession);
 	}
+	// 방접속만 했을 때 ( 다른 애들 움직이는 건 보임)
 	public static void C_RoomEnterHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;

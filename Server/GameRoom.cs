@@ -63,9 +63,7 @@ namespace Server
         public void CreateRoom(ClientSession session, int max, string title)
         {
             session.Room = this;
-            session.ReadyStatus = 0;
-            session.Attr = "fire";
-            isFireReady = true;
+            session.ReadyStatus = 0;  
             Host = session.PlayerId;
             Title = title;
             MaxPlayer = max;
@@ -100,19 +98,29 @@ namespace Server
             session.Room = this;
             session.RoomId = this.RoomId;
             session.ReadyStatus = -1;
-            session.Attr = "water";
             ++NowPlayer;
             isWaterReady = true;
 
             // 방에 입장해 유저에게 방의 현재상태를 알려줄 패킷 생성
-            ShowRoomInfo(session);
-            
-            // 새로 들어간방의 유저들에게 들어갔음을 알려준다.
-            S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
-            bEnterRoom.playerId = session.PlayerId;
+            //ShowRoomInfo(session);
+
+            // 새로 들어온 플레이어에게 플레이어 목록 전송
+            S_PlayerList players = new S_PlayerList();
+            foreach (ClientSession s in _sessions)
+            {
+                players.players.Add(new S_PlayerList.Player()
+                {
+                    isSelf = (s == session),
+                    playerId = s.PlayerId,
+                    attr = s.Attr,
+                    posX = s.PosX,
+                    posY = s.PosY,
+                    posZ = s.PosZ,
+                });
+                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
+            }
             _sessions.Add(session);
-            Push(() => Broadcast(bEnterRoom.Write()));
-            Console.WriteLine("전체에게 뿌려줌");
+            session.Send(players.Write());           
 
         }
 
@@ -136,36 +144,12 @@ namespace Server
         // 사용 안함
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-            ClientSession Mysession;
-            Mysession = _sessions.Find(x => x.SessionId == session.SessionId);
-            Mysession.Attr = packet.attr;
-            Mysession.PosX = packet.posX;
-            Mysession.PosY = packet.posY;
-            Mysession.PosZ = packet.posZ;
-
-
-            _sessions.Remove(_sessions.Find(x => x.SessionId == session.SessionId));
-            _sessions.Add(Mysession);
-
-            // 새로 들어온 플레이어에게 플레이어 목록 전송
-            S_PlayerList players = new S_PlayerList();
-            foreach (ClientSession s in _sessions)
-            {
-                
-                players.players.Add(new S_PlayerList.Player()
-                {
-                    isSelf = (s == session),
-                    playerId = s.PlayerId,
-                    attr = s.Attr,
-                    posX = s.PosX,
-                    posY = s.PosY,
-                    posZ = s.PosZ,
-                });
-                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
-
-            }
-
-            session.Send(players.Write());
+            
+            session.Attr = packet.attr;
+            session.PosX = packet.posX;
+            session.PosY = packet.posY;
+            session.PosZ = packet.posZ;
+                         
 
             // 새로 들어온 플레이어의 입장을 모든 플레이어에게 알린다.
             S_BroadcastEnterGame enter = new S_BroadcastEnterGame();
@@ -175,6 +159,7 @@ namespace Server
             enter.posY = packet.posY;
             enter.posZ = packet.posZ;            
             Broadcast(enter.Write());
+
         }
         /// <summary>
         /// 호스트가 나가면 실행
