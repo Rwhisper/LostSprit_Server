@@ -94,33 +94,33 @@ namespace Server
         /// <param name="session"></param>
         public void Enter(ClientSession session)
         {
-            // 새로들어온 유저에게 룸 객체 지엉
-            session.Room = this;
-            session.RoomId = this.RoomId;
-            session.ReadyStatus = -1;
-            ++NowPlayer;
-            isWaterReady = true;
+            //// 새로들어온 유저에게 룸 객체 지엉
+            //session.Room = this;
+            //session.RoomId = this.RoomId;
+            //session.ReadyStatus = -1;
+            //++NowPlayer;
+            //isWaterReady = true;
 
             // 방에 입장해 유저에게 방의 현재상태를 알려줄 패킷 생성
             //ShowRoomInfo(session);
 
             // 새로 들어온 플레이어에게 플레이어 목록 전송
-            S_PlayerList players = new S_PlayerList();
-            foreach (ClientSession s in _sessions)
-            {
-                players.players.Add(new S_PlayerList.Player()
-                {
-                    isSelf = (s == session),
-                    playerId = s.PlayerId,
-                    attr = s.Attr,
-                    posX = s.PosX,
-                    posY = s.PosY,
-                    posZ = s.PosZ,
-                });
-                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
-            }
+            //S_PlayerList players = new S_PlayerList();
+            //foreach (ClientSession s in _sessions)
+            //{
+            //    players.players.Add(new S_PlayerList.Player()
+            //    {
+            //        isSelf = (s == session),
+            //        playerId = s.PlayerId,
+            //        attr = s.Attr,
+            //        posX = s.PosX,
+            //        posY = s.PosY,
+            //        posZ = s.PosZ,
+            //    });
+            //    Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
+            //}
             _sessions.Add(session);
-            session.Send(players.Write());           
+            //session.Send(players.Write());           
 
         }
 
