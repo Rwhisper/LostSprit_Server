@@ -27,6 +27,7 @@ namespace Server
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
 			IPAddress ipAddr = ipHost.AddressList[0];
+            IPAddress ip = IPAddress.Parse("10.105.1.244");
 			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
