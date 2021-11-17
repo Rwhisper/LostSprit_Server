@@ -96,30 +96,35 @@ namespace Server
         {
             //// 새로들어온 유저에게 룸 객체 지엉
             //session.Room = this;
-            //session.RoomId = this.RoomId;
+            session.RoomId = this.RoomId;
             //session.ReadyStatus = -1;
-            //++NowPlayer;
+            ++NowPlayer;
             //isWaterReady = true;
 
             // 방에 입장해 유저에게 방의 현재상태를 알려줄 패킷 생성
             //ShowRoomInfo(session);
 
-            // 새로 들어온 플레이어에게 플레이어 목록 전송
-            //S_PlayerList players = new S_PlayerList();
-            //foreach (ClientSession s in _sessions)
-            //{
-            //    players.players.Add(new S_PlayerList.Player()
-            //    {
-            //        isSelf = (s == session),
-            //        playerId = s.PlayerId,
-            //        attr = s.Attr,
-            //        posX = s.PosX,
-            //        posY = s.PosY,
-            //        posZ = s.PosZ,
-            //    });
-            //    Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
-            //}
+            //새로 들어온 플레이어에게 플레이어 목록 전송
+            S_PlayerList players = new S_PlayerList();
+            foreach (ClientSession s in _sessions)
+            {
+                players.players.Add(new S_PlayerList.Player()
+                {
+                    isSelf = (s == session),
+                    playerId = s.PlayerId,
+                    attr = s.Attr,
+                    posX = s.PosX,
+                    posY = s.PosY,
+                    posZ = s.PosZ,
+                });
+                Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
+            }
+
+            session.RoomId = RoomId;
+            S_EnterRoomOk pkt = new S_EnterRoomOk();
+            session.Send(pkt.Write());
             _sessions.Add(session);
+            Console.WriteLine("입장 성공");
             //session.Send(players.Write());           
 
         }
@@ -145,11 +150,27 @@ namespace Server
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
             
+          
+            //새로 들어온 플레이어에게 플레이어 목록 전송
+            //S_PlayerList players = new S_PlayerList();
+            //foreach (ClientSession s in _sessions)
+            //{
+            //    players.players.Add(new S_PlayerList.Player()
+            //    {
+            //        isSelf = (s == session),
+            //        playerId = s.PlayerId,
+            //        attr = s.Attr,
+            //        posX = s.PosX,
+            //        posY = s.PosY,
+            //        posZ = s.PosZ,
+            //    });
+            //    Console.WriteLine($"속성 : {s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
+            //}
             session.Attr = packet.attr;
             session.PosX = packet.posX;
             session.PosY = packet.posY;
             session.PosZ = packet.posZ;
-                         
+
 
             // 새로 들어온 플레이어의 입장을 모든 플레이어에게 알린다.
             S_BroadcastEnterGame enter = new S_BroadcastEnterGame();
@@ -242,7 +263,7 @@ namespace Server
             session.PosX = packet.posX;
             session.PosY = packet.posY;
             session.PosZ = packet.posZ;
-            Console.WriteLine("in");
+            //Console.WriteLine("in");
 
 
             // 모두에게 알린다.
@@ -252,7 +273,7 @@ namespace Server
             move.posY = session.PosY;
             move.posZ = session.PosZ;
 
-            Console.WriteLine(move.playerId + move.posX + move.posY + move.posZ);
+            //Console.WriteLine(move.playerId + move.posX + move.posY + move.posZ);
             Broadcast(move.Write());
         }
         public void Rot(ClientSession session, C_Rot packet)

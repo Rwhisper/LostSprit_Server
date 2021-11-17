@@ -858,38 +858,7 @@ public class S_CreateRoomResult : IPacket
 
 public class S_EnterRoomOk : IPacket
 {
-	public string title;
-	public string stage;
-	public int maxPlayer;
-	public int nowPlayer;
-	public class PlayerReady
-	{
-		public string playerId;
-		public int readyStatus;
 	
-		public void Read(ArraySegment<byte> segment, ref ushort count)
-		{
-			ushort playerIdLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-			count += sizeof(ushort);
-			this.playerId = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, playerIdLen);
-			count += playerIdLen;
-			this.readyStatus = BitConverter.ToInt32(segment.Array, segment.Offset + count);
-			count += sizeof(int);
-		}
-	
-		public bool Write(ArraySegment<byte> segment, ref ushort count)
-		{
-			bool success = true;
-			ushort playerIdLen = (ushort)Encoding.Unicode.GetBytes(this.playerId, 0, this.playerId.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-			Array.Copy(BitConverter.GetBytes(playerIdLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-			count += sizeof(ushort);
-			count += playerIdLen;
-			Array.Copy(BitConverter.GetBytes(this.readyStatus), 0, segment.Array, segment.Offset + count, sizeof(int));
-			count += sizeof(int);
-			return success;
-		}	
-	}
-	public List<PlayerReady> playerReadys = new List<PlayerReady>();
 
 	public ushort Protocol { get { return (ushort)PacketID.S_EnterRoomOk; } }
 
@@ -898,27 +867,7 @@ public class S_EnterRoomOk : IPacket
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
-		ushort titleLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-		count += sizeof(ushort);
-		this.title = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, titleLen);
-		count += titleLen;
-		ushort stageLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-		count += sizeof(ushort);
-		this.stage = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, stageLen);
-		count += stageLen;
-		this.maxPlayer = BitConverter.ToInt32(segment.Array, segment.Offset + count);
-		count += sizeof(int);
-		this.nowPlayer = BitConverter.ToInt32(segment.Array, segment.Offset + count);
-		count += sizeof(int);
-		this.playerReadys.Clear();
-		ushort playerReadyLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-		count += sizeof(ushort);
-		for (int i = 0; i < playerReadyLen; i++)
-		{
-			PlayerReady playerReady = new PlayerReady();
-			playerReady.Read(segment, ref count);
-			playerReadys.Add(playerReady);
-		}
+		
 	}
 
 	public ArraySegment<byte> Write()
@@ -929,22 +878,7 @@ public class S_EnterRoomOk : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_EnterRoomOk), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		ushort titleLen = (ushort)Encoding.Unicode.GetBytes(this.title, 0, this.title.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(titleLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		count += titleLen;
-		ushort stageLen = (ushort)Encoding.Unicode.GetBytes(this.stage, 0, this.stage.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-		Array.Copy(BitConverter.GetBytes(stageLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		count += stageLen;
-		Array.Copy(BitConverter.GetBytes(this.maxPlayer), 0, segment.Array, segment.Offset + count, sizeof(int));
-		count += sizeof(int);
-		Array.Copy(BitConverter.GetBytes(this.nowPlayer), 0, segment.Array, segment.Offset + count, sizeof(int));
-		count += sizeof(int);
-		Array.Copy(BitConverter.GetBytes((ushort)this.playerReadys.Count), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		foreach (PlayerReady playerReady in this.playerReadys)
-			playerReady.Write(segment, ref count);
+		
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 

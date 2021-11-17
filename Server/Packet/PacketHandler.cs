@@ -42,7 +42,7 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		Console.WriteLine($"위치 : {movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
+		//Console.WriteLine($"위치 : {movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
 		SessionManager.Instance.Move(clientSession, movePacket);
 		//GameRoom room = clientSession.Room;
 		//room.Push(

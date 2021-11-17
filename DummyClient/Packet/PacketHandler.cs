@@ -27,13 +27,13 @@ class PacketHandler
 	{
 		S_BroadcastLeaveGame pkt = packet as S_BroadcastLeaveGame;
 		ServerSession serverSession = session as ServerSession;
-
+        Console.WriteLine("leaveGame");
 	}
 	// 주변의 플레이어들 리스트를 불러온다
 	public static void S_PlayerListHandler(PacketSession session, IPacket packet)
 	{
 		S_PlayerList pkt = packet as S_PlayerList;
-
+        Console.WriteLine("playList요청 ");
 		
 	}
 	// 누군가가 이동하였을때

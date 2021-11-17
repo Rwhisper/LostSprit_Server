@@ -293,6 +293,7 @@ namespace Server
 					{
 						// 룸에 넣어준다.
 						room.Push(() => room.Enter(session));
+
 					}
 					else // 룸 안에 현재인원이 최대인원보다 같거나 많으면 
 					{

@@ -85,14 +85,7 @@
 	  <int name ="nowPlayer"/>
   </packet>
   <packet name ="S_EnterRoomOk">
-    <string name ="title"/>
-    <string name ="stage"/>
-    <int name ="maxPlayer"/>
-    <int name ="nowPlayer"/>
-    <list name = "playerReady">
-      <string name="playerId"/>
-      <int name ="readyStatus"/>
-    </list>
+    
   </packet>
 	<packet name ="S_RoomInfo">
      <string name ="title"/>
