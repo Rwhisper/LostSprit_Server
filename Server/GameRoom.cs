@@ -70,6 +70,7 @@ namespace Server
             NowPlayer++;
             Stage = "1";
             State = true;
+            session.Attr = "fire";
             _sessions.Add(session);
 
             S_CreateRoomResult pkt = new S_CreateRoomResult();
@@ -103,8 +104,7 @@ namespace Server
             //ShowRoomInfo(session);
 
             //새로 들어온 플레이어에게 플레이어 목록 전송
-            S_PlayerList players = new S_PlayerList();
-            
+            S_PlayerList players = new S_PlayerList();            
             
             session.Attr = "water";
             session.PosX = 0;
