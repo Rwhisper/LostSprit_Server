@@ -284,7 +284,7 @@ namespace Server
 		/// <param name="session"></param>
 		/// <param name="packet"></param>
 		public void EnterRoom(ClientSession session, C_RoomEnter packet)
-		{
+		{ 
 			lock (_lock)
 			{
 				if (_gameRoom.TryGetValue(packet.roomId, out GameRoom room)) // roomId 에 맞는 방이 존재할떄
@@ -341,25 +341,25 @@ namespace Server
             {
 				room.Push(() => room.GameStart(session, pkt));
             }
-			
-		}
-		/// <summary>
-		/// 게임 오버 요청
-		/// </summary>
-		/// <param name="session"></param>
-		public void GameOver(ClientSession session)
-		{
-			if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
-			{
-				room.Push(() => room.GameOver(session));
-			}
-		}
-		/// <summary>
-		/// 게임 클리어
-		/// </summary>
-		/// <param name="session"></param>
-		/// <param name="packet"></param>
-		public void GameClear(ClientSession session, C_GameClear packet)
+        }
+        /// <summary>
+        /// 게임 오버 요청
+        /// </summary>
+        /// <param name="session"></param>
+        public void GameOver(ClientSession session)
+        {
+            if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
+            {
+                room.Push(() => room.GameOver(session));
+            }
+        }
+
+        /// <summary>
+        /// 게임 클리어
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="packet"></param>
+        public void GameClear(ClientSession session, C_GameClear packet)
 		{
 			lock (_lock)
 			{
