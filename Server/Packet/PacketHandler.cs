@@ -28,12 +28,12 @@ class PacketHandler
 		if (clientSession.Room == null)
 			return;
 
-		//SessionManager.Instance.LeaveGame(clientSession);
-		//GameRoom room = clientSession.Room;
-		//room.Push(
-		//	() => room.Leave(clientSession)
-		//); 
-	}
+        SessionManager.Instance.LeaveGame(clientSession);
+        //GameRoom room = clientSession.Room;
+        //room.Push(
+        //	() => room.Leave(clientSession)
+        //); 
+    }
 	public static void C_MoveHandler(PacketSession session, IPacket packet)
 	{
 		C_Move movePacket = packet as C_Move;
@@ -44,6 +44,7 @@ class PacketHandler
 
 		//Console.WriteLine($"위치 : {movePacket.posX}, {movePacket.posY}, {movePacket.posZ}");
 		SessionManager.Instance.Move(clientSession, movePacket);
+
 		//GameRoom room = clientSession.Room;
 		//room.Push(
 		//	() => room.Move(clientSession, movePacket)

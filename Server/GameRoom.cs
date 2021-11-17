@@ -79,9 +79,7 @@ namespace Server
             pkt.maxPlayer = this.MaxPlayer;
             pkt.nowPlayer = this.NowPlayer;
             session.Send(pkt.Write());
-        }
-
-     
+        }    
 
         public void Broadcast(ArraySegment<byte> segment)
         {
@@ -106,6 +104,12 @@ namespace Server
 
             //새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
+            
+            
+            session.Attr = "water";
+            session.PosX = 0;
+            session.PosY = 1;
+            session.PosZ = 5;
             foreach (ClientSession s in _sessions)
             {
                 players.players.Add(new S_PlayerList.Player()
@@ -119,8 +123,9 @@ namespace Server
                 });
                 Console.WriteLine($"{s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
             }
-
+            session.Send(players.Write());
             session.RoomId = RoomId;
+
             S_EnterRoomOk pkt = new S_EnterRoomOk();
             session.Send(pkt.Write());
             _sessions.Add(session);
