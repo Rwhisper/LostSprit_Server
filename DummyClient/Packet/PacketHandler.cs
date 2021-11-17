@@ -38,4 +38,36 @@ class PacketHandler
 		//if (chatPacket.playerId == 1)
 		//Console.WriteLine(chatPacket.chat);
 	}
+	public static void S_BroadcastRotHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadcastRot pkt = packet as S_BroadcastRot;
+		ServerSession serverSession = session as ServerSession;
+
+		
+
+	}
+	public static void S_BroadCastGameOverHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadCastMove pkt = packet as S_BroadCastMove;
+		ServerSession serverSession = session as ServerSession;
+
+		//if (chatPacket.playerId == 1)
+		//Console.WriteLine(chatPacket.chat);
+	}	
+	public static void S_BroadCastDropItemHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadCastMove pkt = packet as S_BroadCastMove;
+		ServerSession serverSession = session as ServerSession;
+
+		//if (chatPacket.playerId == 1)
+		//Console.WriteLine(chatPacket.chat);
+	}
+	public static void S_BoradCastDestroyItemHandler(PacketSession session, IPacket packet)
+	{
+		S_BroadCastMove pkt = packet as S_BroadCastMove;
+		ServerSession serverSession = session as ServerSession;
+
+		//if (chatPacket.playerId == 1)
+		//Console.WriteLine(chatPacket.chat);
+	}
 }

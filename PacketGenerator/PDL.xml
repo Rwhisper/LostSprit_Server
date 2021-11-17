@@ -34,6 +34,19 @@
 		<float name ="posY"/>
 		<float name ="posZ"/>
 	</packet>
+	<packet name="C_Rot">
+		<float name="rotX"/>
+		<float name="rotY"/>
+		<float name="rotZ"/>
+		<float name ="rotW"/>
+	</packet>
+	<packet name="S_BroadcastRot">
+		<int name="playerId"/>
+		<float name="rotX"/>
+		<float name="rotY"/>
+		<float name="rotZ"/>
+		<float name ="rotW"/>
+	</packet>
 	<packet name ="C_Enter">
 		<string name ="attr"/>
 		<float name ="posX"/>
