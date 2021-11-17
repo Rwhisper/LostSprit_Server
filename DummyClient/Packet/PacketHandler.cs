@@ -67,6 +67,13 @@ class PacketHandler
 	{
 		
 	}
+	public static void S_RoomInfoHandler(PacketSession session, IPacket packet)
+	{
+		S_RoomInfo pkt = packet as S_RoomInfo;
+        Console.WriteLine(pkt.maxPlayer.ToString() + " " + pkt.nowPlayer.ToString() + pkt.stage + pkt.title);
+
+	}
+	
 	public static void S_BroadCastDestroyItemHandler(PacketSession session, IPacket packet)
 	{
 		ServerSession serverSession = session as ServerSession;

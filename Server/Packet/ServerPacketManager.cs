@@ -59,6 +59,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.C_GameClear, PacketHandler.C_GameClearHandler);
 		_makeFunc.Add((ushort)PacketID.C_GameRestart, MakePacket<C_GameRestart>);
 		_handler.Add((ushort)PacketID.C_GameRestart, PacketHandler.C_GameRestartHandler);
+		_makeFunc.Add((ushort)PacketID.C_RoomInfo, MakePacket<C_RoomInfo>);
+		_handler.Add((ushort)PacketID.C_RoomInfo, PacketHandler.C_RoomInfoHandler);
 
 	}
 

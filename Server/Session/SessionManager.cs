@@ -206,6 +206,16 @@ namespace Server
 			}
 		}
 
+		public void RoomInfo(ClientSession session)
+        {
+            lock (_lock)
+            {
+				if(_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
+                {
+					room.Push(() => room.ShowRoomInfo(session));
+                }
+			}
+        }
 
 		/// <summary>
 		/// 룸 리스트 요청 패킷이 넘어 올때 실행

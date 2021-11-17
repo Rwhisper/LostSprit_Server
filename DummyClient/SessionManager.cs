@@ -43,6 +43,11 @@ namespace DummyClient
 				
 						
         }
+		public void RoomInfo()
+        {
+			C_RoomInfo pkt = new C_RoomInfo();
+			session.Send(pkt.Write());
+		}
 		public void Logout()
         {
 			C_Logout pkt = new C_Logout();

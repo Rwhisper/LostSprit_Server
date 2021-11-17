@@ -58,6 +58,9 @@ namespace DummyClient
 					case "Move":
 						SessionManager.Instance.Move();
 						break;
+					case "RoomInfo":
+						SessionManager.Instance.RoomInfo();
+						break;
                 }
 
 				//try

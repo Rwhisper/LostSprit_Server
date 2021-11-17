@@ -22,35 +22,37 @@ public enum PacketID
 	S_RankList = 14,
 	S_CreateRoomResult = 15,
 	S_EnterRoomOk = 16,
-	S_RoomConnFaild = 17,
-	S_BroadCastEnterRoom = 18,
-	S_NewRanking = 19,
-	S_Ready = 20,
-	S_ReadyCancel = 21,
-	S_GameStart = 22,
-	S_GameClear = 23,
-	S_GameOver = 24,
-	S_GameStartFaild = 25,
-	C_Login = 26,
-	C_Logout = 27,
-	C_LeaveGame = 28,
-	C_GameStart = 29,
-	C_Move = 30,
-	C_Rot = 31,
-	C_Enter = 32,
-	C_DestroyItem = 33,
-	C_GameOver = 34,
-	C_DropItem = 35,
-	C_RoomList = 36,
-	C_CreateRoom = 37,
-	C_RoomRefresh = 38,
-	C_RoomEnter = 39,
-	C_RankList = 40,
-	C_LeaveRoom = 41,
-	C_Ready = 42,
-	C_ReadyCancle = 43,
-	C_GameClear = 44,
-	C_GameRestart = 45,
+	S_RoomInfo = 17,
+	S_RoomConnFaild = 18,
+	S_BroadCastEnterRoom = 19,
+	S_NewRanking = 20,
+	S_Ready = 21,
+	S_ReadyCancel = 22,
+	S_GameStart = 23,
+	S_GameClear = 24,
+	S_GameOver = 25,
+	S_GameStartFaild = 26,
+	C_Login = 27,
+	C_Logout = 28,
+	C_LeaveGame = 29,
+	C_GameStart = 30,
+	C_Move = 31,
+	C_Rot = 32,
+	C_Enter = 33,
+	C_DestroyItem = 34,
+	C_GameOver = 35,
+	C_DropItem = 36,
+	C_RoomList = 37,
+	C_CreateRoom = 38,
+	C_RoomRefresh = 39,
+	C_RoomEnter = 40,
+	C_RankList = 41,
+	C_LeaveRoom = 42,
+	C_Ready = 43,
+	C_ReadyCancle = 44,
+	C_GameClear = 45,
+	C_GameRestart = 46,
+	C_RoomInfo = 47,
 	
 }
 
@@ -856,6 +858,36 @@ public class S_CreateRoomResult : IPacket
 
 public class S_EnterRoomOk : IPacket
 {
+	
+
+	public ushort Protocol { get { return (ushort)PacketID.S_EnterRoomOk; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_EnterRoomOk), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+public class S_RoomInfo : IPacket
+{
 	public string title;
 	public string stage;
 	public int maxPlayer;
@@ -889,7 +921,7 @@ public class S_EnterRoomOk : IPacket
 	}
 	public List<PlayerReady> playerReadys = new List<PlayerReady>();
 
-	public ushort Protocol { get { return (ushort)PacketID.S_EnterRoomOk; } }
+	public ushort Protocol { get { return (ushort)PacketID.S_RoomInfo; } }
 
 	public void Read(ArraySegment<byte> segment)
 	{
@@ -925,7 +957,7 @@ public class S_EnterRoomOk : IPacket
 		ushort count = 0;
 
 		count += sizeof(ushort);
-		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_EnterRoomOk), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.S_RoomInfo), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		ushort titleLen = (ushort)Encoding.Unicode.GetBytes(this.title, 0, this.title.Length, segment.Array, segment.Offset + count + sizeof(ushort));
 		Array.Copy(BitConverter.GetBytes(titleLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
@@ -1187,38 +1219,6 @@ public class S_ReadyCancel : IPacket
 public class S_GameStart : IPacket
 {
 	public string stageCode;
-	public class PlayerReady
-	{
-		public string playerId;
-		public string status;
-	
-		public void Read(ArraySegment<byte> segment, ref ushort count)
-		{
-			ushort playerIdLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-			count += sizeof(ushort);
-			this.playerId = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, playerIdLen);
-			count += playerIdLen;
-			ushort statusLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-			count += sizeof(ushort);
-			this.status = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, statusLen);
-			count += statusLen;
-		}
-	
-		public bool Write(ArraySegment<byte> segment, ref ushort count)
-		{
-			bool success = true;
-			ushort playerIdLen = (ushort)Encoding.Unicode.GetBytes(this.playerId, 0, this.playerId.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-			Array.Copy(BitConverter.GetBytes(playerIdLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-			count += sizeof(ushort);
-			count += playerIdLen;
-			ushort statusLen = (ushort)Encoding.Unicode.GetBytes(this.status, 0, this.status.Length, segment.Array, segment.Offset + count + sizeof(ushort));
-			Array.Copy(BitConverter.GetBytes(statusLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-			count += sizeof(ushort);
-			count += statusLen;
-			return success;
-		}	
-	}
-	public List<PlayerReady> playerReadys = new List<PlayerReady>();
 
 	public ushort Protocol { get { return (ushort)PacketID.S_GameStart; } }
 
@@ -1231,15 +1231,6 @@ public class S_GameStart : IPacket
 		count += sizeof(ushort);
 		this.stageCode = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, stageCodeLen);
 		count += stageCodeLen;
-		this.playerReadys.Clear();
-		ushort playerReadyLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
-		count += sizeof(ushort);
-		for (int i = 0; i < playerReadyLen; i++)
-		{
-			PlayerReady playerReady = new PlayerReady();
-			playerReady.Read(segment, ref count);
-			playerReadys.Add(playerReady);
-		}
 	}
 
 	public ArraySegment<byte> Write()
@@ -1254,10 +1245,6 @@ public class S_GameStart : IPacket
 		Array.Copy(BitConverter.GetBytes(stageCodeLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		count += stageCodeLen;
-		Array.Copy(BitConverter.GetBytes((ushort)this.playerReadys.Count), 0, segment.Array, segment.Offset + count, sizeof(ushort));
-		count += sizeof(ushort);
-		foreach (PlayerReady playerReady in this.playerReadys)
-			playerReady.Write(segment, ref count);
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 
@@ -1515,7 +1502,7 @@ public class C_LeaveGame : IPacket
 
 public class C_GameStart : IPacket
 {
-	
+	public string stageCode;
 
 	public ushort Protocol { get { return (ushort)PacketID.C_GameStart; } }
 
@@ -1524,7 +1511,10 @@ public class C_GameStart : IPacket
 		ushort count = 0;
 		count += sizeof(ushort);
 		count += sizeof(ushort);
-		
+		ushort stageCodeLen = BitConverter.ToUInt16(segment.Array, segment.Offset + count);
+		count += sizeof(ushort);
+		this.stageCode = Encoding.Unicode.GetString(segment.Array, segment.Offset + count, stageCodeLen);
+		count += stageCodeLen;
 	}
 
 	public ArraySegment<byte> Write()
@@ -1535,7 +1525,10 @@ public class C_GameStart : IPacket
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_GameStart), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
-		
+		ushort stageCodeLen = (ushort)Encoding.Unicode.GetBytes(this.stageCode, 0, this.stageCode.Length, segment.Array, segment.Offset + count + sizeof(ushort));
+		Array.Copy(BitConverter.GetBytes(stageCodeLen), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		count += stageCodeLen;
 
 		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
 
@@ -2112,6 +2105,36 @@ public class C_GameRestart : IPacket
 
 		count += sizeof(ushort);
 		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_GameRestart), 0, segment.Array, segment.Offset + count, sizeof(ushort));
+		count += sizeof(ushort);
+		
+
+		Array.Copy(BitConverter.GetBytes(count), 0, segment.Array, segment.Offset, sizeof(ushort));
+
+		return SendBufferHelper.Close(count);
+	}
+}
+
+public class C_RoomInfo : IPacket
+{
+	
+
+	public ushort Protocol { get { return (ushort)PacketID.C_RoomInfo; } }
+
+	public void Read(ArraySegment<byte> segment)
+	{
+		ushort count = 0;
+		count += sizeof(ushort);
+		count += sizeof(ushort);
+		
+	}
+
+	public ArraySegment<byte> Write()
+	{
+		ArraySegment<byte> segment = SendBufferHelper.Open(4096);
+		ushort count = 0;
+
+		count += sizeof(ushort);
+		Array.Copy(BitConverter.GetBytes((ushort)PacketID.C_RoomInfo), 0, segment.Array, segment.Offset + count, sizeof(ushort));
 		count += sizeof(ushort);
 		
 

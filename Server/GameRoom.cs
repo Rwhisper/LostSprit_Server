@@ -64,6 +64,7 @@ namespace Server
         {
             session.Room = this;
             session.ReadyStatus = 0;
+            session.Attr = "fire";
             isFireReady = true;
             Host = session.PlayerId;
             Title = title;
@@ -72,6 +73,7 @@ namespace Server
             Stage = "1";
             State = true;
             _sessions.Add(session);
+
             S_CreateRoomResult pkt = new S_CreateRoomResult();
             // 생성 성공
             pkt.title = this.Title;
@@ -98,24 +100,12 @@ namespace Server
             session.Room = this;
             session.RoomId = this.RoomId;
             session.ReadyStatus = -1;
+            session.Attr = "water";
             ++NowPlayer;
             isWaterReady = true;
 
             // 방에 입장해 유저에게 방의 현재상태를 알려줄 패킷 생성
-            S_EnterRoomOk pkt = new S_EnterRoomOk();
-            pkt.title = this.Title;
-            pkt.stage = this.Stage;
-            pkt.maxPlayer = this.MaxPlayer;
-            pkt.nowPlayer = this.NowPlayer;
-
-            S_EnterRoomOk.PlayerReady pr = new S_EnterRoomOk.PlayerReady();            
-            foreach (ClientSession s in _sessions)
-            {
-                pr.playerId = s.PlayerId;
-                pr.readyStatus = s.ReadyStatus;
-                pkt.playerReadys.Add(pr);
-            }
-            session.Send(pkt.Write());
+            ShowRoomInfo(session);
             
             // 새로 들어간방의 유저들에게 들어갔음을 알려준다.
             S_BroadCastEnterRoom bEnterRoom = new S_BroadCastEnterRoom();
@@ -126,6 +116,23 @@ namespace Server
 
         }
 
+        public void ShowRoomInfo(ClientSession  session)
+        {
+            S_RoomInfo pkt = new S_RoomInfo();
+            pkt.title = this.Title;
+            pkt.stage = this.Stage;
+            pkt.maxPlayer = this.MaxPlayer;
+            pkt.nowPlayer = this.NowPlayer;
+
+            S_RoomInfo.PlayerReady pr = new S_RoomInfo.PlayerReady();
+            foreach (ClientSession s in _sessions)
+            {
+                pr.playerId = s.PlayerId;
+                pr.readyStatus = s.ReadyStatus;
+                pkt.playerReadys.Add(pr);
+            }
+            session.Send(pkt.Write());
+        }
         // 사용 안함
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {

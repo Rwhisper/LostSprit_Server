@@ -207,5 +207,11 @@ class PacketHandler
 		//	() => room.GameOver(clientSession)
 		//);
 	}
+	public static void C_RoomInfoHandler(PacketSession session, IPacket packet)
+	{
+		ClientSession clientSession = session as ClientSession;
+
+		SessionManager.Instance.RoomInfo(clientSession);		
+	}
 
 }
