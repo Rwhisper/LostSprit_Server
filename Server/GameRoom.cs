@@ -58,7 +58,6 @@ namespace Server
             _sessions.Add(Mysession);
 
 
-
             // 새로 들어온 플레이어에게 플레이어 목록 전송
             S_PlayerList players = new S_PlayerList();
             foreach (ClientSession s in _sessions)
@@ -116,6 +115,25 @@ namespace Server
             move.posY = session.PosY;
             move.posZ = session.PosZ;
             Broadcast(move.Write());
+        }
+
+        public void Rot(ClientSession session, C_Rot packet)
+        {
+            // 좌표 바꿔주고
+            session.PosX = packet.rotX;
+            session.PosY = packet.rotY;
+            session.PosZ = packet.rotZ;
+            session.PosZ = packet.rotW;
+
+
+            // 모두에게 알린다.
+            S_BroadcastRot rot = new S_BroadcastRot();
+            rot.playerId = session.SessionId;
+            rot.rotX = session.RotX;
+            rot.rotY = session.RotY;
+            rot.rotZ = session.RotZ;
+            rot.rotW = session.RotW;
+            Broadcast(rot.Write());
         }
 
         public void DestroyItem(ClientSession session, C_DestroyItem packet)

@@ -33,6 +33,20 @@ class PacketHandler
 			() => room.Move(clientSession, movePacket)
 		);
 	}
+	public static void C_RotHandler(PacketSession session, IPacket packet)
+	{
+		C_Rot rotPacket = packet as C_Rot;
+		ClientSession clientSession = session as ClientSession;
+
+		if (clientSession.Room == null)
+			return;
+
+		Console.WriteLine($"{rotPacket.rotX}, {rotPacket.rotY}, {rotPacket.rotZ}");
+		GameRoom room = clientSession.Room;
+		room.Push(
+			() => room.Rot(clientSession, rotPacket)
+		);
+	}
 	public static void C_EnterHandler(PacketSession session, IPacket packet)
 	{
 		
@@ -57,6 +71,7 @@ class PacketHandler
 			() => room.DestroyItem(clientSession, destroyItem)
 		);
 	}
+	
 	public static void C_GameOverHandler(PacketSession session, IPacket packet)
 	{
 

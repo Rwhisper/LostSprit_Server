@@ -18,6 +18,12 @@ namespace Server
 		public float PosY { get; set; }
 		public float PosZ { get; set; }
 
+		public float RotX { get; set; }
+		public float RotY { get; set; }
+		public float RotZ { get; set; }
+		public float RotW { get; set; }
+
+
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
