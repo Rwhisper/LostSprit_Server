@@ -63,6 +63,7 @@ MySQL을 사용한 DB연결
 - ![image](https://user-images.githubusercontent.com/73861946/141686759-b778126d-8673-467f-96ef-21e580b741fe.png)
 
 
-infren의 c#으로과 유니티로 만드는 mmorpg 게임 개발 시리즈 part4: 게임서버를 참고하였습니다.
+[infren의 c#으로과 유니티로 만드는 mmorpg 게임 개발 시리즈 part4: 게임서버]을 보면서 만들었습니다.
+
 
 
