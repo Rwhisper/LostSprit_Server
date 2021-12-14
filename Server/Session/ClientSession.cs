@@ -27,6 +27,12 @@ namespace Server
 		public float RotZ { get; set; }
 		public float RotW { get; set; }
 
+		public ClientSession()
+        {
+			this.RoomId = 0;
+			ReadyStatus = 0;
+        }
+
 		public string RoomHost { get; set; }
 
 		public override void OnConnected(EndPoint endPoint)

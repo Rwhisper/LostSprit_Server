@@ -24,10 +24,10 @@ namespace Server
         static void Main(string[] args) 
 		{
 			// DNS (Domain Name System)
-			string host = Dns.GetHostName();
-			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-            IPAddress ip = IPAddress.Parse("10.105.1.244");
+			//string host = Dns.GetHostName();
+			//IPHostEntry ipHost = Dns.GetHostEntry(host);
+			//IPAddress ipAddr = ipHost.AddressList[0];
+            IPAddress ip = IPAddress.Parse("0.0.0.0");
 			IPEndPoint endPoint = new IPEndPoint(ip, 7777);
 
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });

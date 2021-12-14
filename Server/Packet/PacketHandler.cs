@@ -62,7 +62,7 @@ class PacketHandler
         //if (movePacket.posX == null)
         //	movePacket.posX == 
         Console.WriteLine($"각도 : {rotPacket.rotX}, {rotPacket.rotY}, {rotPacket.rotZ}, {rotPacket.rotW}");
-  //      GameRoom room = clientSession.Room;
+		//      GameRoom room = clientSession.Room;
 		//room.Push(
 		//	() => room.Rot(clientSession, rotPacket)
 		//);

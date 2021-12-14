@@ -97,18 +97,19 @@ namespace Server
         {
             lock (_lock)
             {
-				// 로그이 시도 결과 반환 패킷
+				// 로그인 시도 결과 반환 패킷
 				S_LoginResult pkt = new S_LoginResult();
 				db = new DataBase();
+				// 아이디 비번 있음
 				if(db.Loing(packet.id, packet.pwd) == 1)
                 {
-					if(_loginSession.TryGetValue(packet.id, out ClientSession s)) // 먼저 같은 아이디로 로그인 한 객체가 있음
+					if (_loginSession.ContainsKey(packet.id))
 					{
 						// 로그인 실패
 						pkt.result = -1;
 						// 널값을 참조하지 않도록 객체 초기화
 						pkt.id = "";
-                    }
+					}
 					else            // 먼저 같은 아이디로 로그인 한 객체가 없음 
 					{
 						// 세션의 아이디 지정
@@ -348,11 +349,16 @@ namespace Server
         /// <param name="session"></param>
         public void GameOver(ClientSession session)
         {
+            if (!_gameRoom.ContainsKey(session.RoomId))
+            {
+				return;
+            }
             if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
             {
                 room.Push(() => room.GameOver(session));
             }
         }
+
 
         /// <summary>
         /// 게임 클리어
@@ -466,11 +472,17 @@ namespace Server
 		/// <param name="packet"></param>
 		public void Move(ClientSession session, C_Move packet)
         {
-			if(_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
-			{
-				room.Push(() => room.Move(session, packet));
-                
-            }
+			if(session.RoomId != 0)
+            {
+                if (_gameRoom.ContainsKey(session.RoomId))
+                {
+					if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
+					{
+						room.Push(() => room.Move(session, packet));
+					}
+				}
+            } 
+			
             
         }
 		public void Rot(ClientSession session, C_Rot packet)
