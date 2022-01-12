@@ -140,14 +140,18 @@ namespace Server
         {
             lock (_lock)
             {
-				if (_loginSession.TryGetValue(session.PlayerId, out ClientSession s))
-				{
-					_loginSession.Remove(session.PlayerId);
-				}
+				if(_loginSession.ContainsKey(session.PlayerId))
+                {
+					if (_loginSession.TryGetValue(session.PlayerId, out ClientSession s))
+					{
+                        Console.WriteLine(session.PlayerId + "유저 로그아웃");
+						_loginSession.Remove(session.PlayerId);
+					}
+				}				
 			}			
 			
         }
-
+		int cnt = 0;
 		/// <summary>
 		/// 룸 리스트 요청 패킷이 넘어 올때 실행
 		/// </summary>
@@ -155,7 +159,7 @@ namespace Server
 		{
 			lock (_lock)
 			{
-				int cnt = 0;
+				
 				List<S_RoomList.Room> _roomList = new List<S_RoomList.Room>();
 
 				foreach (GameRoom room in _gameRoom.Values)
@@ -225,6 +229,7 @@ namespace Server
 				_sessions.Remove(session.SessionId);
             }
         }
+		int roomId = 1;
 		/// <summary>
 		/// 룸생성 요청을 처리
 		/// </summary>
@@ -234,10 +239,10 @@ namespace Server
 		{
 			lock (_lock)
 			{
-				int roomId = _roomId++;
+				roomId = _roomId++;
 				// 룸 아이디 저장
 				session.RoomId = roomId;
-				GameRoom createRoom = new GameRoom();
+				GameRoom createRoom = new GameRoom(roomId, packet.maxUser, session.PlayerId, packet.title);
 				// 새로 만든 룸 객체 초기화 하고 호스트 넣어줌
 				createRoom.Push(() => createRoom.CreateRoom(session, packet.maxUser, packet.title));
 				// 룸 리스트에 룸 추가
@@ -288,22 +293,25 @@ namespace Server
 		{ 
 			lock (_lock)
 			{
-				if (_gameRoom.TryGetValue(packet.roomId, out GameRoom room)) // roomId 에 맞는 방이 존재할떄
-				{
-					if (room.MaxPlayer > room.NowPlayer) // 룸 안에 현재 인원이 최대인원보다 적다면
+				if(_gameRoom.ContainsKey(packet.roomId))
+                {
+					if (_gameRoom.TryGetValue(packet.roomId, out GameRoom room)) // roomId 에 맞는 방이 존재할떄
 					{
-						// 룸에 넣어준다.
-						room.Push(() => room.Enter(session));
+						if (room.MaxPlayer > room.NowPlayer) // 룸 안에 현재 인원이 최대인원보다 적다면
+						{
+							// 룸에 넣어준다.
+							room.Push(() => room.Enter(session));
 
+						}
+						else // 룸 안에 현재인원이 최대인원보다 같거나 많으면 
+						{
+							// 룸 접속 실패 패킷 보내준다.
+							S_RoomConnFaild pkt = new S_RoomConnFaild();
+							pkt.result = 2;
+							session.Send(pkt.Write());
+						}
 					}
-					else // 룸 안에 현재인원이 최대인원보다 같거나 많으면 
-					{
-						// 룸 접속 실패 패킷 보내준다.
-						S_RoomConnFaild pkt = new S_RoomConnFaild();
-						pkt.result = 2;
-						session.Send(pkt.Write());
-					}
-				}
+				}				
 				else // 방이 존재 하지 않습니다.
 				{
 					S_RoomConnFaild pkt = new S_RoomConnFaild();

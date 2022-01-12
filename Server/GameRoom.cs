@@ -48,6 +48,20 @@ namespace Server
             StartGameTime = null;
             EndGameTime = null;
         }
+        public GameRoom(int _maxPalyer, int _roomId, string _host, string _title)
+        {
+            Title = _title;
+            RoomId = _roomId;
+            Host = _host;
+            MaxPlayer = _maxPalyer;
+            NowPlayer = 0;
+            State = false;
+            Stage = "1";
+            isFireReady = false;
+            isWaterReady = false;
+            StartGameTime = null;
+            EndGameTime = null;
+        }
 
         // 지속적으로 패킷 모아서 보내기
         //public void Flush()
@@ -59,10 +73,9 @@ namespace Server
         //    //Console.WriteLine($"Flushed {_pendingList.Count} items");
         //    _pendingList.Clear();
         //}
-
+        
         public void CreateRoom(ClientSession session, int max, string title)
         {
-            session.Room = this;
             session.ReadyStatus = 0;  
             Host = session.PlayerId;
             Title = title;
@@ -82,11 +95,13 @@ namespace Server
             session.Send(pkt.Write());
         }    
 
+        // 방의 모든 인원에게 패킷 보내기
         public void Broadcast(ArraySegment<byte> segment)
         {
             foreach (ClientSession s in _sessions)
                 s.Send(segment);
         }
+
         /// <summary>
         /// 캐릭터가 방에 접속 했을 때 실행
         /// </summary>
@@ -131,7 +146,6 @@ namespace Server
             _sessions.Add(session);
             Console.WriteLine("입장 성공");
             //session.Send(players.Write());           
-
         }
 
         public void ShowRoomInfo(ClientSession  session)
@@ -151,40 +165,35 @@ namespace Server
             }
             session.Send(pkt.Write());
         }
-        // 사용 안함
+
+        // 사용 함
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-            
-          
-            //새로 들어온 플레이어에게 플레이어 목록 전송
-            //S_PlayerList players = new S_PlayerList();
-            //foreach (ClientSession s in _sessions)
-            //{
-            //    players.players.Add(new S_PlayerList.Player()
-            //    {
-            //        isSelf = (s == session),
-            //        playerId = s.PlayerId,
-            //        attr = s.Attr,
-            //        posX = s.PosX,
-            //        posY = s.PosY,
-            //        posZ = s.PosZ,
-            //    });
-            //    Console.WriteLine($"속성 : {s.Attr}, {s.PosX}, {s.PosY}, {s.PosZ}");
-            //}
-            session.Attr = packet.attr;
-            session.PosX = packet.posX;
-            session.PosY = packet.posY;
-            session.PosZ = packet.posZ;
+            _sessions.Add(session);
 
+            // 이부분 수정하면 좋을것 같음
+            S_BroadCastEnterRoom enterRoom_packet = new S_BroadCastEnterRoom();
+            enterRoom_packet.playerId = session.PlayerId;
+            Broadcast(enterRoom_packet.Write());
 
-            // 새로 들어온 플레이어의 입장을 모든 플레이어에게 알린다.
-            S_BroadcastEnterGame enter = new S_BroadcastEnterGame();
-            enter.playerId = session.PlayerId;
-            enter.attr = packet.attr;
-            enter.posX = packet.posX;
-            enter.posY = packet.posY;
-            enter.posZ = packet.posZ;            
-            Broadcast(enter.Write());
+           
+
+        }
+
+        public void EnterRoomOk(ClientSession session)
+        {
+            S_EnterRoomOk enterOk_packet = new S_EnterRoomOk();
+            enterOk_packet.title = this.Title;
+            enterOk_packet.host = this.Host;
+            enterOk_packet.maxPlayer = this.MaxPlayer;
+            enterOk_packet.nowPlayer = this.NowPlayer;
+            foreach(var s in _sessions)
+            {
+                S_EnterRoomOk.Player players = new S_EnterRoomOk.Player();
+                players.playerName = s.PlayerId;
+                players.ready = s.Attr;
+            }
+
 
         }
         /// <summary>

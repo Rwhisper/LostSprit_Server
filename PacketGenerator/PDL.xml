@@ -54,7 +54,7 @@
   </packet>
   <packet name ="S_BroadCastReady">
     <string name ="playerID"/>
-    <int name ="result"/>
+    <string name ="result"/>
   </packet>
   <packet name ="S_BroadCastItemEvent">
     <int name ="itemId"/>
@@ -85,7 +85,18 @@
 	  <int name ="nowPlayer"/>
   </packet>
   <packet name ="S_EnterRoomOk">
-    
+    <string name ="title"/>
+    <string name ="host"/>
+    <int name ="maxPlayer"/>
+    <int name ="nowPlayer"/>
+    <bool name ="state"/>
+    <string name ="stage"/>
+    <bool name ="isFireReady"/>
+    <bool name ="isWaterReady"/>
+    <list name ="player">
+      <string name="playerName"/>
+      <int name ="ready"/>
+    </list>
   </packet>
 	<packet name ="S_RoomInfo">
      <string name ="title"/>
