@@ -102,6 +102,30 @@ namespace Server
                 s.Send(segment);
         }
 
+        // Ready 요청이 왔을때 혹시 요청하는 속성이 같은 방의 누군가가 이미 선택한 속성이라면 false 반환
+        bool GetReadyStatus(int n)
+        {
+            foreach(var s in _sessions)
+            {
+                if (s.ReadyStatus == n)
+                    return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 모든 유저들이 Ready가 되어있음을 확인하여 반환하는 함수
+        /// </summary>
+        /// <returns></returns>
+        bool AllReady()
+        {
+            foreach (var s in _sessions)
+            {
+                if (s.ReadyStatus == 0)
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// 캐릭터가 방에 접속 했을 때 실행
         /// </summary>
@@ -147,7 +171,19 @@ namespace Server
             Console.WriteLine("입장 성공");
             //session.Send(players.Write());           
         }
+        /// <summary>
+        /// 채팅 처리 함수
+        /// </summary>
+        /// <param name="c_chat"></param>
+        /// <param name="playerID"></param>
+        public void Chatting(C_Chat c_chat, string playerID)
+        {
+            S_Chat pkt = new S_Chat();
+            pkt.playerId = playerID;
+            pkt.chat = c_chat.chat;
 
+            Broadcast(pkt.Write());
+        }
         public void ShowRoomInfo(ClientSession  session)
         {
             S_RoomInfo pkt = new S_RoomInfo();
@@ -166,17 +202,18 @@ namespace Server
             session.Send(pkt.Write());
         }
 
+
         // 사용 함
         public void EnterRoom(ClientSession session, C_Enter packet) 
         {
-            _sessions.Add(session);
 
             // 이부분 수정하면 좋을것 같음
             S_BroadCastEnterRoom enterRoom_packet = new S_BroadCastEnterRoom();
             enterRoom_packet.playerId = session.PlayerId;
             Broadcast(enterRoom_packet.Write());
 
-           
+            _sessions.Add(session);
+            EnterRoomOk(session);
 
         }
 
@@ -190,12 +227,15 @@ namespace Server
             foreach(var s in _sessions)
             {
                 S_EnterRoomOk.Player players = new S_EnterRoomOk.Player();
-                players.playerName = s.PlayerId;
-                players.ready = s.Attr;
+                players.playerID = s.PlayerId;
+                players.ready = s.ReadyStatus;
+                enterOk_packet.players.Add(players);
             }
 
-
+            session.Send(enterOk_packet.Write());
         }
+
+
         /// <summary>
         /// 호스트가 나가면 실행
         /// </summary>
@@ -223,6 +263,18 @@ namespace Server
             Broadcast(leave.Write());
         }
 
+        private void ModifyReady(ClientSession session, int ready)
+        {
+            for(int i =0; i < _sessions.Count; i++)
+            {
+                if(_sessions[i].PlayerId == session.PlayerId)
+                {
+                    Console.WriteLine("방에서 Ready요청에 해당하는 유저 찾음");
+                    _sessions[i].ReadyStatus = ready;
+                    return;
+                }
+            }
+        }
         /// <summary>
         /// 플레이어가 레디를 할때 호출 packet.result = 0 : fire요청, packet.result = 1 : water요청
         /// </summary>
@@ -231,44 +283,34 @@ namespace Server
         public void Ready(ClientSession session, C_Ready packet)
         {
             S_BroadCastReady pkt = new S_BroadCastReady();
-            if (packet.result == 0)
+            if(GetReadyStatus(packet.result))
             {
-                if (!this.isFireReady)
-                {
-                    isFireReady = true;
-                    session.ReadyStatus = 0;
-                    pkt.playerID = session.PlayerId;
-                    pkt.result = packet.result;
-                }
+                ModifyReady(session, packet.result);
+                pkt.playerID = session.PlayerId;
+                pkt.result = packet.result;
+                Console.WriteLine(session.PlayerId + "캐릭터 선택" + pkt.result);
             }
-            else if (packet.result == 1)
+            else
             {
-                if (!this.isWaterReady)
-                {
-                    isWaterReady = true;
-                    session.ReadyStatus = 1;
-                    pkt.playerID = session.PlayerId;
-                    pkt.result = packet.result;
-                }
+                // 이미 선택한 유저가 있기때문에 실행 안됨
+                // 클라쪽에서 애초에 막겠지만 혹시 모를 상황을 대비하여
+                Console.WriteLine("이미 선택한 유저가 있습니다.");
             }
-            Push(() => session.Send(pkt.Write()));
+
+            session.Send(pkt.Write());
 
         }
-        public void ReadyCancel(ClientSession session, C_ReadyCancle packet)
+        /// <summary>
+        /// Ready취소 함수
+        /// </summary>
+        /// <param name="session"></param>
+        public void ReadyCancel(ClientSession session)
         {
-            //S_ReadyCancel pkt = new S_ReadyCancel();
-            //if (packet.result == 0)
-            //{
-            //    isFireReady = true;
-            //    session.ReadyStatus = 0;
-            //    pkt.playerID = session.PlayerId;
-            //    pkt.result = packet.result;
-            //}
-            //else if (packet.result == 1)
-            //{
+            S_ReadyCancel pkt = new S_ReadyCancel();
+            pkt.playerId = session.PlayerId;
+            Broadcast(pkt.Write());
 
-            //}
-            
+            Console.WriteLine(pkt.playerId + "의 Ready Cancle ");
         }
 
         public void Move(ClientSession session, C_Move packet)

@@ -284,6 +284,18 @@ namespace Server
                 }
 			}
         }
+
+		private void RoomEnterFaild(ClientSession session, int n)
+        {
+			lock(_lock)
+            {
+				S_RoomConnFaild pkt = new S_RoomConnFaild();
+				pkt.result = n;
+				//session.RoomId = packet.roomId;
+				session.Send(pkt.Write());
+			}
+        }
+
 		/// <summary>
 		/// 새로이 룸에 들어가기 
 		/// </summary>
@@ -305,19 +317,13 @@ namespace Server
 						}
 						else // 룸 안에 현재인원이 최대인원보다 같거나 많으면 
 						{
-							// 룸 접속 실패 패킷 보내준다.
-							S_RoomConnFaild pkt = new S_RoomConnFaild();
-							pkt.result = 2;
-							session.Send(pkt.Write());
+							RoomEnterFaild(session, 2);
 						}
 					}
 				}				
 				else // 방이 존재 하지 않습니다.
 				{
-					S_RoomConnFaild pkt = new S_RoomConnFaild();
-					pkt.result = 3;
-					//session.RoomId = packet.roomId;
-					session.Send(pkt.Write());
+					RoomEnterFaild(session, 3);
 				}
 			}
 		}

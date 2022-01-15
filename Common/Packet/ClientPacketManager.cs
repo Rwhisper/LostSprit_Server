@@ -71,6 +71,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_GameOver, PacketHandler.S_GameOverHandler);
 		_makeFunc.Add((ushort)PacketID.S_GameStartFaild, MakePacket<S_GameStartFaild>);
 		_handler.Add((ushort)PacketID.S_GameStartFaild, PacketHandler.S_GameStartFaildHandler);
+		_makeFunc.Add((ushort)PacketID.S_Chat, MakePacket<S_Chat>);
+		_handler.Add((ushort)PacketID.S_Chat, PacketHandler.S_ChatHandler);
 
 	}
 

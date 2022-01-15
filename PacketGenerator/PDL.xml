@@ -54,7 +54,7 @@
   </packet>
   <packet name ="S_BroadCastReady">
     <string name ="playerID"/>
-    <string name ="result"/>
+    <int name ="result"/>
   </packet>
   <packet name ="S_BroadCastItemEvent">
     <int name ="itemId"/>
@@ -94,7 +94,7 @@
     <bool name ="isFireReady"/>
     <bool name ="isWaterReady"/>
     <list name ="player">
-      <string name="playerName"/>
+      <string name="playerID"/>
       <int name ="ready"/>
     </list>
   </packet>
@@ -126,10 +126,7 @@
     </list>
   </packet>
   <packet name ="S_ReadyCancel">
-    <list name ="playerReady">
-      <string name ="playerId"/>
-      <int name ="Readystatus"/>
-    </list>
+   <string name ="playerId"/>
   </packet>
   <packet name ="S_GameStart">
     <string name ="stageCode"/>   
@@ -146,7 +143,10 @@
   <packet name ="S_GameStartFaild">
     <int name ="result"/>
   </packet>
-
+  <packet name ="S_Chat">
+    <string name ="playerId"/>
+    <string name ="chat"/>
+  </packet>
 
 
 
@@ -154,6 +154,9 @@
   <packet name ="C_Login">
     <string name ="id"/>
     <string name ="pwd"/>
+  </packet>
+  <packet name ="C_Chat">
+    <string name="chat"/>
   </packet>
   <packet name ="C_Logout">
   </packet>
@@ -210,7 +213,6 @@
     <int name ="result"/>
   </packet>
   <packet name ="C_ReadyCancle">
-    <int name ="result"/>
   </packet>
   <packet name ="C_GameClear">
     <string name ="clearTime"/>

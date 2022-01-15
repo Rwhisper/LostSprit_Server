@@ -21,6 +21,8 @@ public class PacketManager
 	{
 		_makeFunc.Add((ushort)PacketID.C_Login, MakePacket<C_Login>);
 		_handler.Add((ushort)PacketID.C_Login, PacketHandler.C_LoginHandler);
+		_makeFunc.Add((ushort)PacketID.C_Chat, MakePacket<C_Chat>);
+		_handler.Add((ushort)PacketID.C_Chat, PacketHandler.C_ChatHandler);
 		_makeFunc.Add((ushort)PacketID.C_Logout, MakePacket<C_Logout>);
 		_handler.Add((ushort)PacketID.C_Logout, PacketHandler.C_LogoutHandler);
 		_makeFunc.Add((ushort)PacketID.C_LeaveGame, MakePacket<C_LeaveGame>);
