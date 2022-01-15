@@ -22,7 +22,7 @@ namespace Server
         public bool isFireReady { get; set; }
         public bool isWaterReady { get; set; }
 
-        
+        int loddingCnt;
         public List<ClientSession> GetSessions()
         {
             List<ClientSession> s = new List<ClientSession>();
@@ -61,6 +61,7 @@ namespace Server
             isWaterReady = false;
             StartGameTime = null;
             EndGameTime = null;
+            loddingCnt = 0;
         }
 
         // 지속적으로 패킷 모아서 보내기
@@ -204,7 +205,7 @@ namespace Server
 
 
         // 사용 함
-        public void EnterRoom(ClientSession session, C_Enter packet) 
+        public void EnterRoom(ClientSession session) 
         {
 
             // 이부분 수정하면 좋을것 같음
@@ -313,6 +314,28 @@ namespace Server
             Console.WriteLine(pkt.playerId + "의 Ready Cancle ");
         }
 
+        /// <summary>
+        /// 스테이지 수정 함수
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="packet"></param>
+        public void StageChange(ClientSession session, C_StageChange packet)
+        {
+            if (session.PlayerId != Host)
+                return;
+            this.Stage = packet.stageCode;
+            S_BroadCastStageChange pkt = new S_BroadCastStageChange();
+            pkt.stageCode = packet.stageCode;
+
+            Broadcast(pkt.Write());
+        }
+
+        
+        /// <summary>
+        /// 캐릭터 움직임 함수 ()
+        /// </summary>
+        /// <param name="session"></param>
+        /// <param name="packet"></param>
         public void Move(ClientSession session, C_Move packet)
         {
             // 좌표 바꿔주고
@@ -332,6 +355,7 @@ namespace Server
             //Console.WriteLine(move.playerId + move.posX + move.posY + move.posZ);
             Broadcast(move.Write());
         }
+
         public void Rot(ClientSession session, C_Rot packet)
         {
             session.RotX = packet.rotX;
@@ -349,38 +373,70 @@ namespace Server
 
         }
         /// <summary>
+        /// 로딩이 완료되었을때 호출하는 함수 (클라이언트에서 로딩완료 요청 보냄)
+        /// </summary>
+        /// <param name="session"></param>
+        public void Lodding_Complete(ClientSession session)
+        {
+            for(int i = 0; i < _sessions.Count; i++)
+            {
+                if(_sessions[i].PlayerId == session.PlayerId)
+                {
+                    _sessions[i].lodding = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 방의 모든 인원이 로딩이 되었는지 확인하는 함수
+        /// </summary>
+        /// <returns></returns>
+        private bool AlllLodding()
+        {
+            foreach(var s in _sessions)
+            {
+                if (s.lodding != false)
+                    return false;
+            }
+            return true;
+        }
+        public void EnterGame(ClientSession session)
+        {
+            if(Host != session.PlayerId)
+            {
+                Console.WriteLine("호스트가 아닙니다.");
+                return;
+            }
+            Console.WriteLine("게임 시작 요청");
+            // 유저 Ready 상태 확인
+            if(!AllReady())
+            {
+                Console.WriteLine("전체 유저가 레디가 되어있지 않습니다.");
+                return;
+            }
+            S_EnterGame pkt = new S_EnterGame();
+            pkt.stage = Stage;
+        }
+
+        /// <summary>
         /// 게임 시작
         /// </summary>
         /// <param name="session"></param>
         public void GameStart(ClientSession session, C_GameStart packet)
         {
-            if(session.PlayerId == this.Host)
+            this.Stage = packet.stageCode;
+            if(!AlllLodding())
             {
-                if(isFireReady && isWaterReady)
-                {
-                    S_GameStart pkt = new S_GameStart();
-                    pkt.stageCode = packet.stageCode;
-                    StartGameTime = DateTime.Now.ToString();
-                     Broadcast(pkt.Write());
-                    Console.WriteLine($"{Host}의 방 게임 시작");
-                }
-                else
-                {
-                    S_GameStart pkt = new S_GameStart();
-                    pkt.stageCode = packet.stageCode;
-                    StartGameTime = DateTime.Now.ToString();
-                    Broadcast(pkt.Write());
-                    Console.WriteLine($"레디가 되지않았지만 게임 시작");
-                }
+                Console.WriteLine("전체 로딩 안됨 Please Wait");
+                return;
             }
-            else
-            {
-                S_GameStartFaild pkt = new S_GameStartFaild();
-                pkt.result = 1;
-                session.Send(pkt.Write());
-                Console.WriteLine($"호스트가 아님당 ");
-            }
+            S_GameStart pkt = new S_GameStart();
+            pkt.stageCode = packet.stageCode;
+            StartGameTime = DateTime.Now.ToString();
+            Broadcast(pkt.Write());
 
+            Console.WriteLine($"{Title}방 게임 시작");
+            
         }
         /// <summary>
         ///  플레이어가 죽거나 다시시작을 눌렀을 때
@@ -388,9 +444,10 @@ namespace Server
         /// <param name="session"></param>
         public void GameOver(ClientSession session)
         {
-            C_GameOver gameOverPacket = new C_GameOver();
-            StartGameTime = DateTime.Now.ToString();            
-            Broadcast(gameOverPacket.Write());
+            Console.WriteLine(Host + "게임오버");
+            S_GameOver pkt = new S_GameOver();
+            StartGameTime = null;            
+            Broadcast(pkt.Write());
         }
        
 

@@ -57,6 +57,8 @@ public class PacketManager
 		_handler.Add((ushort)PacketID.S_RoomConnFaild, PacketHandler.S_RoomConnFaildHandler);
 		_makeFunc.Add((ushort)PacketID.S_BroadCastEnterRoom, MakePacket<S_BroadCastEnterRoom>);
 		_handler.Add((ushort)PacketID.S_BroadCastEnterRoom, PacketHandler.S_BroadCastEnterRoomHandler);
+		_makeFunc.Add((ushort)PacketID.S_BroadCastStageChange, MakePacket<S_BroadCastStageChange>);
+		_handler.Add((ushort)PacketID.S_BroadCastStageChange, PacketHandler.S_BroadCastStageChangeHandler);
 		_makeFunc.Add((ushort)PacketID.S_NewRanking, MakePacket<S_NewRanking>);
 		_handler.Add((ushort)PacketID.S_NewRanking, PacketHandler.S_NewRankingHandler);
 		_makeFunc.Add((ushort)PacketID.S_Ready, MakePacket<S_Ready>);

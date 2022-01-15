@@ -244,7 +244,7 @@ namespace Server
 				session.RoomId = roomId;
 				GameRoom createRoom = new GameRoom(roomId, packet.maxUser, session.PlayerId, packet.title);
 				// 새로 만든 룸 객체 초기화 하고 호스트 넣어줌
-				createRoom.Push(() => createRoom.CreateRoom(session, packet.maxUser, packet.title));
+				createRoom.Push(() => createRoom.EnterRoom(session));
 				// 룸 리스트에 룸 추가
 				_gameRoom.Add(roomId, createRoom);
 				if(_gameRoom.TryGetValue(roomId, out GameRoom r)) 
@@ -280,7 +280,7 @@ namespace Server
             {
 				if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
                 {
-					room.Push(() => room.EnterRoom(session, packet));
+					room.Push(() => room.EnterRoom(session));
                 }
 			}
         }
@@ -531,7 +531,7 @@ namespace Server
 		{
 			if (_gameRoom.TryGetValue(session.RoomId, out GameRoom room))
 			{
-				room.Push(() => room.ReadyCancel(session, packet));
+				room.Push(() => room.ReadyCancel(session));
 			}
 		}
 

@@ -27,6 +27,8 @@ namespace Server
 		public float RotZ { get; set; }
 		public float RotW { get; set; }
 
+		public int state { get; set; }
+		public bool lodding { get; set; }
 		public ClientSession()
         {
 			this.RoomId = 0;

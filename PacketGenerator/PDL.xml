@@ -2,7 +2,7 @@
 <PDL>
   <!--S - 서버에서 보내는 패킷-->
 	<packet name ="S_EnterGame">
-		<int name ="sessionId"/>
+		<string name ="stage"/>
 	</packet>
   <packet name ="S_LoginResult">
     <int name ="result"/>
@@ -114,9 +114,9 @@
   <packet name="S_BroadCastEnterRoom">
     <string name="playerId"/>
   </packet>
-	<pacekt name ="S_StageChange">
+	<packet name ="S_BroadCastStageChange">
 		<string name ="stageCode"/>
-	</pacekt>
+	</packet>
   <packet name ="S_NewRanking">    
   </packet>
   <packet name ="S_Ready">
@@ -143,11 +143,15 @@
   <packet name ="S_GameStartFaild">
     <int name ="result"/>
   </packet>
+  
   <packet name ="S_Chat">
     <string name ="playerId"/>
     <string name ="chat"/>
   </packet>
 
+  <packet name ="S_LoddingOK">
+    <string name ="playerId"/>
+  </packet>
 
 
   <!--C - 클라이언트에서 보내는 패킷-->
@@ -170,6 +174,8 @@
 		<float name ="posY"/>
 		<float name ="posZ"/>
 	</packet>
+  <packet name ="C_Lodding">    
+  </packet>
   <packet name ="C_Rot">
     <float name ="rotX"/>
 		<float name ="rotY"/>
@@ -211,6 +217,9 @@
   </packet>
   <packet name ="C_Ready">
     <int name ="result"/>
+  </packet>
+  <packet name="C_StageChange">
+    <string name ="stageCode"/>
   </packet>
   <packet name ="C_ReadyCancle">
   </packet>
