@@ -107,6 +107,14 @@ class PacketHandler
 
 
 	}
+
+	public static void C_StageChangeHandler(PacketSession session, IPacket packet)
+	{
+		C_StageChange pkt = packet as C_StageChange;
+		ClientSession clientSession = session as ClientSession;
+
+
+	}
 	public static void C_GameOverHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
