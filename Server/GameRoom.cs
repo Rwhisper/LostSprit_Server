@@ -326,7 +326,7 @@ namespace Server
             this.Stage = packet.stageCode;
             S_BroadCastStageChange pkt = new S_BroadCastStageChange();
             pkt.stageCode = packet.stageCode;
-
+            Console.WriteLine($"{RoomId} 방 스테이지 체인지");
             Broadcast(pkt.Write());
         }
 
@@ -383,6 +383,7 @@ namespace Server
                 if(_sessions[i].PlayerId == session.PlayerId)
                 {
                     _sessions[i].lodding = true;
+                    Console.WriteLine($"{session.PlayerId} Lodding완료");
                 }
             }
         }
