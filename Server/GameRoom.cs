@@ -48,7 +48,7 @@ namespace Server
             StartGameTime = null;
             EndGameTime = null;
         }
-        public GameRoom(int _maxPalyer, int _roomId, string _host, string _title)
+        public GameRoom(int _roomId, int _maxPalyer, string _host, string _title)
         {
             Title = _title;
             RoomId = _roomId;
@@ -214,6 +214,7 @@ namespace Server
             Broadcast(enterRoom_packet.Write());
 
             _sessions.Add(session);
+            this.NowPlayer++;
             EnterRoomOk(session);
 
         }
@@ -225,6 +226,7 @@ namespace Server
             enterOk_packet.host = this.Host;
             enterOk_packet.maxPlayer = this.MaxPlayer;
             enterOk_packet.nowPlayer = this.NowPlayer;
+            enterOk_packet.stage = this.Stage;
             foreach(var s in _sessions)
             {
                 S_EnterRoomOk.Player players = new S_EnterRoomOk.Player();

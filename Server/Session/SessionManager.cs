@@ -97,12 +97,14 @@ namespace Server
         {
             lock (_lock)
             {
+                Console.WriteLine($"로그인 요청 : {session.PlayerId}");
 				// 로그인 시도 결과 반환 패킷
 				S_LoginResult pkt = new S_LoginResult();
 				db = new DataBase();
 				// 아이디 비번 있음
 				if(db.Loing(packet.id, packet.pwd) == 1)
                 {
+					// 현재 같은 아이디로 로그인 되어 있음
 					if (_loginSession.ContainsKey(packet.id))
 					{
 						// 로그인 실패
@@ -120,6 +122,7 @@ namespace Server
 						pkt.id = packet.id;
 						// 로그인 성공
 						pkt.result = 1;
+                        Console.WriteLine($"{session.PlayerId}로그인 성공");
 					}					
                 }
                 else
@@ -172,7 +175,7 @@ namespace Server
 					gm.stage = room.Stage;
 					gm.state = room.State;
 
-					if (room.State)
+					if (!room.State)
 					{
 						_roomList.Add(gm);
 						Console.WriteLine("방 있음" + gm.host + gm.maxPlayer + gm.nowPlayer + gm.stage + gm.state + gm.title);

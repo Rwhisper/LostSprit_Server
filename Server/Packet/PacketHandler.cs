@@ -14,6 +14,11 @@ class PacketHandler
 		SessionManager.Instance.Login(clientSession, loginPacket);
 
 	}
+	public static void C_ChatHandler(PacketSession session, IPacket packet)
+	{
+	
+
+	}
 	public static void C_LogoutHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;

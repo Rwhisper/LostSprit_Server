@@ -11,13 +11,14 @@ namespace DummyClient
 
 	class Program
 	{
+		
 		static void Main(string[] args)
 		{
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
 			IPAddress ipAddr = ipHost.AddressList[0];
-			IPAddress ip = IPAddress.Parse("49.170.231.107");
+			IPAddress ip = IPAddress.Parse("192.168.219.101");
 			IPEndPoint endPoint = new IPEndPoint(ip, 7777);
 
 			Connector connector = new Connector();
@@ -34,11 +35,15 @@ namespace DummyClient
                 switch (n)
                 {
 					case "Login" :
+                        Console.WriteLine("로그인 하세요 id");
 						string id = Console.ReadLine();
+                        Console.WriteLine("로그인 하세요 pw");
 						string pwd = Console.ReadLine();
 						SessionManager.Instance.Login(id, pwd);
+                        Console.WriteLine("로그인 요청중");
 						break;
 					case "roomList":
+                        Console.WriteLine("룸 리스트 요청 보내기");
 						SessionManager.Instance.RoomListRequest();						
 						break;
 					case "Logout":
@@ -62,7 +67,20 @@ namespace DummyClient
 					case "RoomInfo":
 						SessionManager.Instance.RoomInfo();
 						break;
-                }
+                    case "RankList":
+						string stageCode = Console.ReadLine();
+						break;
+					case "GameOver":
+
+						break;
+					case "GameReStart":
+
+						break;
+                    case "GameClear":
+
+						break;
+
+				}
 
 				//try
 				//{
