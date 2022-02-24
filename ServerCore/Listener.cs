@@ -22,13 +22,19 @@ namespace ServerCore
 			// 수신 시작
 			// backlog : 최대 대기수
 			_listenSocket.Listen(backlog);
-			
+
+			// 이벤트 핸들러 생성
 			SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+			// 이벤트 연결
 			args.Completed += new EventHandler<SocketAsyncEventArgs>(OnAcceptCompleted);
+			// 비동기 연결 시작
 			RegisterAccept(args);
 			
 		}
-
+		/// <summary>
+		/// 비동기 accept 함수 accept이 성공함녀 OnAcceptCompleted 함수를 호출한다.
+		/// </summary>
+		/// <param name="args"></param>
 		void RegisterAccept(SocketAsyncEventArgs args)
 		{
 			args.AcceptSocket = null;
@@ -38,6 +44,7 @@ namespace ServerCore
 				OnAcceptCompleted(null, args);
 		}
 
+		// 비동기 accept이 성고하면 호출하는 함수
 		void OnAcceptCompleted(object sender, SocketAsyncEventArgs args)
 		{
 			if (args.SocketError == SocketError.Success)

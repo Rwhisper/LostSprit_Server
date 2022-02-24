@@ -30,6 +30,7 @@ namespace DummyClient
 			while (true)
 			{
 				string n;
+                
 				n = Console.ReadLine( );
                 switch (n)
                 {
@@ -63,7 +64,7 @@ namespace DummyClient
 						SessionManager.Instance.RoomInfo();
 						break;
                 }
-
+				Console.Write("명령어를 입력해주세요 :  ");
 				//try
 				//{
 				//	SessionManager.Instance.SendForEach();
