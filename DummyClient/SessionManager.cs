@@ -10,7 +10,7 @@ namespace DummyClient
 		public static SessionManager Instance { get { return _session; } }
 
 		//List<ServerSession> _sessions = new List<ServerSession>();
-		public static ServerSession session = new ServerSession();
+		public ServerSession session = new ServerSession();
 		object _lock = new object();
 
 		Random _rand = new Random();
@@ -39,9 +39,7 @@ namespace DummyClient
 				pkt.id = id;
 				pkt.pwd = pwd;
 				session.Send(pkt.Write());
-			}
-				
-						
+			}			
         }
 		public void RoomInfo()
         {
@@ -115,7 +113,7 @@ namespace DummyClient
 		{
 			lock (_lock)
 			{
-				 session = new ServerSession();
+				 //session = new ServerSession();
 				return session;
 			}
 		}

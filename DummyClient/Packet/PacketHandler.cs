@@ -117,12 +117,13 @@ class PacketHandler
 	public static void S_EnterRoomOkHandler(PacketSession session, IPacket packet)
 	{
 		ServerSession serverSession = session as ServerSession;
+        Console.WriteLine("enterRoom ok");
 	}
 	public static void S_RoomConnFaildHandler(PacketSession session, IPacket packet)
 	{
 		ServerSession serverSession = session as ServerSession;
 		S_RoomConnFaild pkt = packet as S_RoomConnFaild;
-        Console.WriteLine(pkt.result);
+        Console.WriteLine($"연결 실패 : {pkt.result}");
 	}
 	public static void S_BroadCastEnterRoomHandler(PacketSession session, IPacket packet)
 	{

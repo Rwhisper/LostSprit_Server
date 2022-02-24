@@ -103,6 +103,7 @@
 	 <string name ="stage"/>
 	 <int name ="maxPlayer"/>
 	 <int name ="nowPlayer"/>		
+   <bool name ="state"/>
 	 <list name = "playerReady">
       <string name="playerId"/>
       <int name ="readyStatus"/>      

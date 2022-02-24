@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
+
 namespace ServerCore
 {
 	public abstract class PacketSession : Session
@@ -81,6 +82,8 @@ namespace ServerCore
 
 			RegisterRecv();
 		}
+		
+		
 
 		public void Send(List<ArraySegment<byte>> sendBuffList)
 		{

@@ -14,6 +14,11 @@ class PacketHandler
 		SessionManager.Instance.Login(clientSession, loginPacket);
 
 	}
+	public static void C_ChatHandler(PacketSession session, IPacket packet)
+	{
+	
+
+	}
 	public static void C_LogoutHandler(PacketSession session, IPacket packet)
 	{
 		ClientSession clientSession = session as ClientSession;
@@ -104,6 +109,14 @@ class PacketHandler
 		SessionManager.Instance.GameStart(clientSession, pkt);
 		//GameRoom room = clientSession.Room;
 		//room.Push(() => room.GameStart(clientSession));
+
+
+	}
+
+	public static void C_StageChangeHandler(PacketSession session, IPacket packet)
+	{
+		C_StageChange pkt = packet as C_StageChange;
+		ClientSession clientSession = session as ClientSession;
 
 
 	}
